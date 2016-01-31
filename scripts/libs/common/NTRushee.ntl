@@ -591,10 +591,12 @@ function NTR_TalkJer()
 			NTM_MoveTo(me.areaid, _npc.x, _npc.y);
 			if(GetDistance(me, _npc) < 10){
 				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
-				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
-				NTC_CancelMenus();
-				NTC_Delay(500);
-				NTC_CancelOut(0);
+				for(i = 0; i<2; i++){
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+					NTC_CancelMenus();
+					NTC_Delay(500);
+					NTC_CancelOut(0);
+				}
 			}
 		}					
 	}
@@ -641,6 +643,12 @@ function NTR_GoDrognan()
 		if(_npc){
 			if(GetDistance(me, _npc) < 15){
 				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelMenus();
+				NTC_Delay(300);
+				NTC_CancelOut(0);
+				NTC_Delay(200);
+				NTC_CancelOut(0);
 				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
 				NTC_CancelMenus();
 				NTC_Delay(300);

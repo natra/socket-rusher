@@ -245,6 +245,9 @@ var i;
 							NTR_TakePortal();
 							NTC_PingDelay(500);
 							NTR_GoCain();
+							NTR_Delay(100);
+							NTR_GoCain();
+							NTR_Delay(100);
 						}
 						break;
 
