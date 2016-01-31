@@ -1,0 +1,1693 @@
+/* 
+ReWrite by goodstuff for Automated Rushee/Rusher. 
+
+Any code not written by myself is listed in the credits in my thread.
+
+You can find any additional information @ www.projectetal.com/forums/index.php?threads/automated-rushee-release-v1.11071
+*/
+var _npc;
+var lifeChunked = false;
+
+function NTR_CoverRushee(area)
+{	
+	area = me.areaid;
+	var _player = GetPlayerUnit();
+	
+	while(_player.GetNext()){
+		if(_player.name !== me.name && _player.areaid === area){
+			TelePlayer();
+		}
+		break;
+	}
+	return false;
+	function TelePlayer(){	
+	
+		var _leaderUnit = GetLeaderUnit(_player.name);
+	
+		if(GetDistance(me, _leaderUnit) < 2){
+			NT_GetCloserIntS(_leaderUnit);
+			NTM_MoveTo(_player.areaid,_player.x+1,_player.y, 0);
+			return NTA_ClearPosition(15);
+		}
+		else{
+			if(GetDistance(me, _leaderUnit) <= GetDistance(me, _leaderUnit) || GetDistance(me, _leaderUnit) >= GetDistance(me, _leaderUnit)){
+				NT_GetCloserIntS(_leaderUnit);
+				return NTA_ClearPosition(15);
+			}
+		}
+		return false;
+	}
+}
+function NTR_GoRushee(area)
+{	
+	area = me.areaid;
+	var _player = GetPlayerUnit();
+	var _msg;
+	
+	if(me.areaid == 37){
+		_msg = "Andariel is dead!";}
+	if(me.areaid == 49){
+		_msg = "Radament dead!";}
+	if(me.areaid == 74){
+		_msg = "Summoner is dead!";}
+	if(me.areaid == 83){
+		_msg = "Council is dead!";}
+	if(me.areaid == 105){
+		_msg = "Izzy dead!";}
+	if(me.areaid == 108){
+		_msg = "Diablo is dead!";}
+	if(me.areaid == 110){
+		_msg = "Shenk is dead!";}
+		
+	while(_player.GetNext()){
+		if(_player.name !== me.name && _player.areaid === area){
+			//Print(C_DARK_GREEN + "Teleporting to " + _player.name);
+			TelePlayer();
+			NTM_MakeTP();
+			NTC_Delay(300);
+			Say(_msg);
+			NTC_Delay(3500);
+		}
+		break;
+	}
+	return false;
+	function TelePlayer(){	
+	
+		var _leaderUnit = GetLeaderUnit(_player.name);
+	
+		if(GetDistance(me, _leaderUnit) < 2){
+			NT_GetCloserIntS(_leaderUnit);
+			return NTM_MoveTo(_player.areaid,_player.x+1,_player.y, 0);
+		}
+		else{
+			if(GetDistance(me, _leaderUnit) <= GetDistance(me, _leaderUnit) || GetDistance(me, _leaderUnit) >= GetDistance(me, _leaderUnit)){
+				return NT_GetCloserIntS(_leaderUnit);
+			}
+		}
+		return false;
+	}
+}
+function NTR_HPCheck()
+{
+	var checkHP;
+	var CurrentHP;
+	var p = .85;
+	var c = .75;
+	
+	if(!NTC_InTown() && me.hp < me.hpmax*p && !lifeChunked){
+		for(var i = 0; i < 6; i++){
+			NTC_Delay(1000);
+			Say("I Need An Adult!");
+			i++;
+			if(i >= 5){
+				lifeChunked = true;
+				CurrentHP = me.hp;
+				checkHP = parseInt(me.hpmax/100*CurrentHP*c);
+				Print(COLOR_8 + "Current HP = " + CurrentHP);
+				Print(COLOR_8 + "Checking if drops below " + checkHP);
+			}
+		}
+	}
+	if(!NTC_InTown() && (me.hp < checkHP) && lifeChunked){
+		for(var i = 0; i < 5; i++){
+			NTC_Delay(1000);
+			Say("I Need An Adult!");
+			i++;
+		}
+	}
+}
+function NTR_Heal(area)
+{ 
+	area = me.areaid;
+	var _area;
+	var i = .85;
+	if(me.hp < me.hpmax*i){ //if below 85% max health visit healer
+		if(me.areaid == 1){
+			_area = "Akara";
+		}
+		if(me.areaid == 40){
+			_area = "Fara";
+		}
+		if(me.areaid == 75){
+			_area = "Ormus";
+		}
+		if(me.areaid == 103){
+			_area = "Jamella";
+		}
+		if(me.areaid == 109){
+			_area = "Malah";
+		}
+			
+		Print(COLOR_5 + "Checking Health..");
+		NTC_Delay(200);
+		Print(COLOR_5 + "Current Health " + "( " + COLOR_1 + me.hp + COLOR_5 + " ) " + COLOR_11 + "Visiting Healer : " + _area);
+		
+		switch(area)
+		{		
+			case 1 :
+				NTTM_TownMove("akara");   
+				_npc = NTC_FindUnit(NTC_UNIT_NPC, 148, 5);      
+				if(_npc){
+					NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+					if(GetDistance(me, _npc) < 15){
+						NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+						NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+						NTC_CancelMenus();
+						NTC_Delay(500);
+						NTC_CancelOut(0);
+					}
+				}
+				NTR_CheckLocation();
+				break;		
+			case 40 :
+				NTTM_TownMove("fara");   
+				_npc = NTC_FindUnit(NTC_UNIT_NPC, 178, 5);      
+				if(_npc){
+					NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+					if(GetDistance(me, _npc) < 15){
+						NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+						NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+						NTC_CancelMenus();
+						NTC_Delay(500);
+						NTC_CancelOut(0);
+					}
+				}
+				NTR_CheckLocation();
+				break;
+			case 75 :
+				NTTM_TownMove("ormus");   
+				_npc = NTC_FindUnit(NTC_UNIT_NPC, 255, 5);      
+				if(_npc){
+					NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+					if(GetDistance(me, _npc) < 15){
+						NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+						NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+						NTC_CancelMenus();
+						NTC_Delay(500);
+						NTC_CancelOut(0);
+					}
+				}
+				NTR_CheckLocation();
+				break;
+			case 103 :
+				NTTM_TownMove("jamella");   
+				_npc = NTC_FindUnit(NTC_UNIT_NPC, 405, 5);      
+				if(_npc){
+					NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+					if(GetDistance(me, _npc) < 15){
+						NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+						NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+						NTC_CancelMenus();
+						NTC_Delay(500);
+						NTC_CancelOut(0);
+					}
+				}
+				NTR_CheckLocation();
+				break;
+			case 109 :
+				NTTM_TownMove("malah");   
+				_npc = NTC_FindUnit(NTC_UNIT_NPC, 513, 5);      
+				if(_npc){
+					NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+					if(GetDistance(me, _npc) < 15){
+						NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+						NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+						NTC_CancelMenus();
+						NTC_Delay(500);
+						NTC_CancelOut(0);
+					}
+				}
+				NTR_CheckLocation();
+				break;
+		}
+	return false;
+	}
+}
+function NTR_Death(area)
+{	
+	var _area = me.areaid;
+	
+	if(me.areaid == 8){
+		_area = "Den of Evil";
+	}
+	if(me.areaid == 37){
+		_area = "Andariel";
+	}
+	if(me.areaid == 49){
+		_area = "Radament";
+	}
+	if(me.areaid == 74){
+		_area = "Summoner";
+	}
+	if(me.areaid == 83){
+		_area = "Travincal";
+	}
+	if(me.areaid == 94){
+		_area = "Ruined Temple";
+	}
+	if(me.areaid == 102){
+		_area = "Mephisto";
+	}
+	if(me.areaid == 105){
+		_area = "Izzy";
+	}
+	if(me.areaid == 108){
+		_area = "Diablo";
+	}
+	if(me.areaid == 110){
+		_area = "Shenk";
+	}			
+	area = me.areaid;
+	if(me.mode == 17 && me.hp < 1){
+		switch(area){
+			case 8 :
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 8 && _leaderareaid != 8){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					Say("I died I need a sec");
+					NTR_GoAkara();
+				}
+				break;
+			case 37 :
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 37 && _leaderareaid != 37){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					Say("I died I need a sec");
+					NTR_GoEast();
+				}
+				break;
+			case 49 : 
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 49 && _leaderareaid != 49){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					Say("I died I need a sec");
+					NTR_CheckLocation();
+				}
+				break;
+			case 74 :
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 74 && _leaderareaid != 74){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					Say("I died I need a sec");
+					NTR_CheckLocation();
+					NTC_Delay(1000);
+					NTR_GoCain();
+				}
+				break;
+			case 83 : 
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 83 && _leaderareaid != 83){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					Say("I died I need a sec");
+					NTR_CheckLocation();
+					NTC_Delay(1000);
+					NTR_GoCain();
+				}
+				break;
+			case 94 :
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 94 && _leaderareaid != 94){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					Say("I died I need a sec");
+					NTR_CheckLocation();
+					NTC_Delay(500);
+					NTR_GoAlkor();				
+				}
+				break;
+			case 102 : 
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 102 && _leaderareaid != 102){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					Say("I died I need a sec");
+					NTR_CheckLocation();
+					NTC_Delay(1000);
+					NTM_UsePortal("BluePortal", 102, NTConfig_Leader);
+					if(me.areaid == 102){
+						NTC_Delay(100);
+						NTM_MoveTo(me.areaid, 17590, 8068);
+						NTC_Delay(1500);
+						if(NTM_TakeUnit(NTC_UNIT_OBJECT, 342)){
+							NTC_Delay(1500);
+						}
+					}
+				}
+				break;
+			case 105 : 
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 105 && _leaderareaid != 105){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					NTR_TalkTyrael();
+				}
+				break;
+			case 108 : 
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 108 && _leaderareaid != 108){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					NTR_GoTyrael();
+				}
+				break;
+			case 110 : 
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid == 110 && _leaderareaid != 110){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die at " + COLOR_5 + _area);
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death at " + COLOR_5 + _area);
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(1000);
+				}
+				break;
+			default :
+				NTC_CheckPlayer(NTConfig_Leader);
+				if(me.areaid !== _leaderareaid){
+					NTC_Delay(200);
+					Print(COLOR_1 + "Rusher let me die");
+					NTC_Delay(300);
+					NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Death Occurred");
+					NTC_Delay(800);
+					me.Cancel(0);
+					NTC_Delay(300);
+					if(GetUIState(0x09, true)){
+						NTC_CancelOut(1);
+					}
+					NTC_Delay(800);
+					Say("I died I need a sec");
+					NTR_CheckLocation();
+				}
+				break;
+		}
+		return true;
+	}
+}
+function NTR_OpenQuest()
+{
+	NTC_Delay(300);
+	SetUIState(0x0F, true);
+	NTC_Delay(800);
+	NTC_CancelOut(1);
+	return false;
+}
+function NTR_GoAkara()
+{
+	if(me.areaid == 1){
+		Print(C_DARK_GREEN + "Completing the Den Quest");
+		NTTM_TownMove("akara");   
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, 148, 5);      
+		if(_npc){
+			NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+			if(GetDistance(me, _npc) < 15){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelMenus();
+				NTC_Delay(300);
+				NTC_CancelOut(0);
+				NTC_Delay(300);
+				NTC_CancelOut(0);
+			}
+		}
+		NTR_CheckLocation();
+	}
+	return false;
+}
+function NTR_GoEast()
+{
+	NTC_Delay(200);
+	if(me.areaid != 1){
+		NTR_TakePortal();
+	}
+	if(me.areaid == 1){
+		Print(C_DARK_GREEN + "Heading East");
+		NTTM_TownMove("warriv");
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, 155, 5);
+		if(_npc){
+			NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+			if(GetDistance(me, _npc) < 15){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelOut(0);
+				NTC_Delay(500);
+				NTC_CancelOut(0);
+			}
+			if(NTT_DoInteract(_npc)){
+				for(var i = 0 ; i < 4 ; i++){
+					if((i % 4) == 0)
+					me.SelectNPCMenu(0x0D36);
+					NTC_Delay(200);
+				}
+			}
+		}
+	}
+	if(me.areaid == 40){						
+		NTR_TalktoJeryhn()
+	}
+	return false;
+}
+function NTR_GoCain()
+{
+	if(me.mode != 17){	
+		Print(C_DARK_GREEN + "Heading to Cain");
+		NTTM_TownMove("cain");			
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, GetLocaleString(2890), 5);    		
+		if(_npc){
+			if(GetDistance(me, _npc) < 15){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelMenus();
+				NTC_Delay(300);
+				NTC_CancelOut(0);
+				NTC_Delay(200);
+				NTC_CancelOut(0);
+			}
+		}				
+    }
+	if(NTC_InTown){
+		NTR_CheckLocation();
+	}
+	return false;
+}
+function NTR_TalktoJeryhn()
+{
+	NTC_Delay(100);
+	if(me.areaid == 40){
+		Print(COLOR_2 + "Talking to Jerhyn");
+ 
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, 201, 5);
+      
+    	if(_npc){
+			NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+			if(GetDistance(me, _npc) < 10){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelMenus();
+				NTC_Delay(500);
+				NTC_CancelOut(0);
+			}
+		}				
+	}
+	return;
+}
+function NTR_TalkJer()
+{	
+	NTC_Delay(100);
+	if(me.areaid == 40){
+		Print(C_DARK_GREEN + "Heading to Jerhyn");
+		NTTM_TownMove("jerhyn"); 
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, 201, 5);      
+    	if(_npc){
+			NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+			if(GetDistance(me, _npc) < 10){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelMenus();
+				NTC_Delay(500);
+				NTC_CancelOut(0);
+			}
+		}					
+	}
+	NTC_Delay(300);
+	if(me.GetQuest(14, 3) && !me.GetQuest(14,4) && !me.GetQuest(14,5)){
+		NTR_TalkJer();
+		NTC_Delay(100);
+		return true;
+	}
+	if(me.areaid == 40){
+		Print(C_DARK_GREEN + "Heading to A3");
+		NTTM_TownMove("meshif");   
+      	_npc = NTC_FindUnit(NTC_UNIT_NPC, 210, 5);      
+      	if(_npc){
+        	NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+			if(GetDistance(me, _npc) < 15){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelMenus();
+				NTC_Delay(200);
+				NTC_CancelOut(0);
+				NTC_Delay(200);
+				NTC_CancelOut(0);
+			}
+         	if(NTT_DoInteract(_npc)){
+				for(var i = 0 ; i < 4 ; i++){
+					if((i % 4) == 0)
+					me.SelectNPCMenu(0x0D38);
+					NTC_Delay(100);
+				}
+			}
+
+		}
+	}	
+	return false;
+}
+function NTR_GoDrognan()
+{
+	NTC_Delay(100);
+	if(me.areaid == 40){
+		Print(C_DARK_GREEN + "Heading to Drognan");
+		NTTM_TownMove("drognan");
+   		_npc = NTC_FindUnit(NTC_UNIT_NPC, GetLocaleString(3023), 5);
+		if(_npc){
+			if(GetDistance(me, _npc) < 15){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelMenus();
+				NTC_Delay(300);
+				NTC_CancelOut(0);
+				NTC_Delay(200);
+				NTC_CancelOut(0);
+			}
+		}					
+ 	}
+	NTR_CheckLocation();
+	return false;
+}
+function NTR_GoAlkor()
+{
+	if(me.areaid == 75) {
+		Print(C_DARK_GREEN + "Heading to Alkor");
+		NTTM_TownMove("alkor");
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, GetLocaleString(1010), 5);		  
+		if(_npc){
+			if(GetDistance(me, _npc) < 15){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_Delay(300);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_Delay(300);
+				NTC_CancelMenus();
+				NTC_Delay(200);
+				NTC_CancelOut(0);
+				NTC_Delay(200);
+				NTC_CancelOut(0);
+			}
+		}
+	}
+	return false;
+}
+function NTR_TalkTyraelSpirit()
+{
+	if(me.areaid == 73){
+		Print(C_DARK_GREEN + "Heading to Tyrael");
+      	_npc = NTC_FindUnit(NTC_UNIT_NPC, GetLocaleString(1013), 5);
+      	if(_npc){
+			if(GetDistance(me, _npc) < 15) 
+			{
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_CancelMenus();
+				NTC_Delay(300);
+				NTC_CancelOut(0);
+			}
+		}				
+	}
+	return false;
+}
+function NTR_GoTyraelSpirit()
+{
+	var px = [22610,22581,22579,22576,22577];
+	var py = [15707,15705,15660,15638,15593];
+	
+	NTM_WalkTo(22619, 15709);
+	
+	for(var i = 0 ; i < px.length ; i += 1){
+		NTM_MoveTo(me.areaid, px[i], py[i]);
+	}
+	
+	_npc = NTC_FindUnit(NTC_UNIT_NPC, GetLocaleString(1013), 5);
+	if(_npc){
+		if(GetDistance(me, _npc) < 1)
+			NTM_MoveTo(_npc.areaid, _npc.x, _npc.y-3);
+			NTM_MakeTP(true);
+			Say("Leeches Talk to Tyrael!");
+	}
+	return false;
+}
+function NTR_TalkTyrael()
+{
+	NTC_Delay(100);
+	if(me.areaid == 103){
+		NTTM_TownMove("tyrael");
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, GetLocaleString(1013), 5);      
+		if(_npc){
+			NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+			if(NTT_DoInteract(_npc)){
+				if(GetDistance(me, _npc) < 15){
+					NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+					NTC_CancelMenus();
+					NTC_Delay(200);
+					NTC_CancelOut(0);
+					NTC_Delay(300);
+					NTC_CancelOut(0);
+				}
+			}
+		}
+		NTR_CheckLocation();
+	}
+	return false;
+}
+function NTR_GoTyrael()
+{
+	NTC_Delay(100);
+	if(me.areaid == 103){
+		NTTM_TownMove("tyrael");
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, GetLocaleString(1013), 5);      
+		if(_npc){
+			NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+			if(NTT_DoInteract(_npc)){
+				if(GetDistance(me, _npc) < 15){
+					NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+					NTC_Delay(200);
+					NTC_CancelMenus();
+					NTC_Delay(200);
+					NTC_CancelOut(0);
+					NTC_Delay(300);
+					NTC_CancelOut(0);
+					NTC_Delay(1000);//let portal open
+				}
+			}
+		}
+		NTR_GoHarrogath();										
+	}
+	return false;
+}
+function NTR_TalkAnya()
+{
+	var _anya;
+	if(me.areaid == 109){
+		Print(C_DARK_GREEN + "Heading to Anya");
+		NTM_UsePortal("BluePortal", 114, NTConfig_Leader);
+	}
+	if(me.areaid == 114){
+		NTC_Delay(500);
+		_anya = NTC_FindUnit(NTC_UNIT_OBJECT, 558, 5);
+		if(_anya){
+			NTM_MoveTo(_anya.areaid,_anya.x+2, _anya.y);  
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _anya); 
+			NTC_Delay(200);
+			NTC_CancelMenus();
+			NTC_Delay(200);
+			NTC_CancelOut(0);
+			NTC_Delay(300);
+			NTC_CancelOut(0);
+		}
+	}
+	return false;
+}
+function NTR_TalkMalah()
+{
+	if(me.areaid == 109){
+		Print(C_DARK_GREEN + "Talking to Malah");
+		NTTM_TownMove("malah");
+		_npc = NTC_FindUnit(NTC_UNIT_NPC, 513, 5);      
+		if(_npc){
+			NTM_MoveTo(me.areaid, _npc.x, _npc.y);
+			if(GetDistance(me, _npc) < 15){
+				NTM_MoveTo(_npc.areaid, _npc.x, _npc.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _npc);
+				NTC_Delay(200);
+				NTC_CancelMenus();
+				NTC_Delay(200);
+				NTC_CancelOut(0);
+				NTC_Delay(300);
+				NTC_CancelOut(0);
+			}
+		}				
+	}
+	NTR_CheckLocation();
+	return false;
+}
+function NTR_GetBook()
+{
+	var _item = NTC_FindUnit(NTC_UNIT_ITEM, 552);
+	var _book = "Book of Skill";
+	
+	if(!_item){ return false; }
+	if(_item){
+		for(var i = 0 ; i < 100 && _item.mode != 0; i++){
+			if(_item.mode != 0){
+				Print(COLOR_5 + "Looking for " + _book + "...");
+				NTM_MoveTo(_item.areaid,_item.x,_item.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _item);
+				NTC_Delay(300);
+			}
+			if (_item.mode == 0){
+				Print(COLOR_8 + "Picked up Skill Book");
+				NTC_PingDelay(200);
+				break;
+			}
+		}		
+	}
+	return false;
+}
+function NTR_ReadBook()
+{
+	var i;
+	var _readbook = me.GetItems(552);
+	var returnCheck = false;
+	if(_readbook.length == 0){
+		Print("Don't have: " + COLOR_17 + "Book of Skill");
+		NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Book of Skill Missing");		
+		returnCheck = true;
+	}
+	if(returnCheck){
+		Print(COLOR_17 + "Didn't get the Book of Skill");
+		return false;
+	}	
+	else if(!returnCheck){
+		SetUIState(0x01, true);
+		if(_readbook.length > 0 && _readbook[0]){
+			for(i = 0; i < 5; i++){
+				me.ClickItem(1, _readbook[0]);		
+				Delay(500);		
+				if(me.itemoncursor)
+				break;
+			}
+		}
+		if(i < 5){
+			for(i = 0; i < 5; i++){
+				me.ClickItem(1, 0, 0, 0);		
+				Delay(500);		
+				if(!me.itemoncursor)
+				break;
+			}
+		}
+	me.Cancel(1);
+	Print(COLOR_8 + "Skill taught!");
+	if(_readbook.length > 0)
+		return true;
+	else
+		return false;
+	}
+}
+function NTR_UseScrollOfTownPortal()
+{
+	var i;
+	var _usescroll = me.GetItems(529);
+	var returnCheck = false;
+	if(_usescroll.length == 0){
+		Print("Don't have: " + COLOR_17 + "a Scroll of Town Portal");		
+		returnCheck = true;
+	}
+	if(returnCheck){
+		Print(COLOR_17 + "No Scroll in Inventory");
+		return false;
+	}	
+	else if(!returnCheck){
+		SetUIState(0x01, true);
+		if(_usescroll.length > 0 && _usescroll[0]){
+			for(i = 0; i < 5; i++){
+				me.ClickItem(1, _usescroll[0]);		
+				Delay(500);		
+				if(me.itemoncursor)
+				break;
+			}
+		}
+		if(i < 5){
+			for(i = 0; i < 5; i++){
+				me.ClickItem(1, 0, 0, 0);		
+				Delay(500);		
+				if(!me.itemoncursor)
+				break;
+			}
+		}
+	me.Cancel(1);
+	if(_usescroll.length > 0)
+		return true;
+	else
+		return false;
+	}
+}
+function NTR_OpenAmmy()
+{
+	var _tomb = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3317)); 
+	if(!_tomb){
+		return false;
+	}
+	else if(_tomb){  
+		if(GetDistance(me, _tomb) > 2){
+			NTM_MoveTo(_tomb.areaid,_tomb.x+2, _tomb.y);   
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _tomb);  
+			NTC_Delay(500); 
+		}
+		return true;
+	}
+}
+function NTR_GetAmmy()
+{
+	var _ammy = NTC_FindUnit(NTC_UNIT_ITEM, GetLocaleString(2697));
+	if(!_ammy){return FailSafeAmmy();}
+	if (_ammy){			
+		for (i = 0; i < 20; i++){
+			if ((i % 5) == 0){
+				if (_ammy.mode == 3 || _ammy.mode == 5){
+					if (NTC_ClearCursor())
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _ammy);
+				}
+			}
+			NTC_PingDelay(100);
+			if (_ammy.mode != 3 && _ammy.mode != 5){
+				Print(COLOR_8 + "Picked up the Ammy");
+				NTC_PingDelay(200);
+				break;
+			}
+		}
+	}
+	return false;
+	function FailSafeAmmy(){
+		var _tomb = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3317)); 
+		//attempts to get the ammy 5 times after that it continues.
+		for(i = 5; i > 0 && (!_ammy || _ammy.mode != 0 || _ammy.mode != 1 && _ammy.mode != 3 || _ammy.mode != 5) ; i--){
+			NTC_PingDelay(1000);
+			Say("!Ammy bugg " + i + " attempts until skip");
+			NTM_WalkTo(me.x-1, me.y-6);
+			NTR_OpenAmmy();
+		}
+		if(i <=1){Say("Nothing i do works!");}
+		//need to add code to send to rushee and rusher to end script if it reaches this point
+	}
+}
+function NTR_GetCube()
+{
+	var _item = NTC_FindUnit(NTC_UNIT_ITEM, 549);
+	var _cube = "Horadric Cube";
+	
+	if(!_item){return false;}
+	if(_item){
+		for(var i = 0 ; i < 100 && _item.mode != 0; i++){
+			if(_item.mode != 0){
+				Print(COLOR_5 + "Looking for " + _cube + "...");
+				NTM_MoveTo(_item.areaid,_item.x,_item.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _item);
+				NTC_Delay(300);
+			}
+			if (_item.mode == 0){
+				Print(COLOR_8 + "Picked up the " + _cube + "!");
+				NTC_PingDelay(200);
+				break;
+			}
+		}		
+	}
+	return false;
+}
+
+function NTR_GetStaff()
+{
+	var _staff = NTC_FindUnit(NTC_UNIT_ITEM, GetLocaleString(2698));
+	var Staff = "Staff";
+	if(!_staff){return false;}
+	if (_staff){
+		for (i = 0; i < 20; i++){
+			if ((i % 5) == 0){
+				if (_staff.mode == 3 || _staff.mode == 5){
+					if (NTC_ClearCursor())
+					Print(COLOR_5 + "Looking for the " + Staff + "...");
+					NTC_PingDelay(300);
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _staff);
+				}
+			}
+			NTC_PingDelay(200);
+			if (_staff.mode != 3 && _staff.mode != 5){
+				Print(COLOR_8 + "Picked up the Staff");
+				NTC_PingDelay(300);
+				break;
+			}
+		}
+	}
+	return false;
+}
+function NTR_CubeStaff()
+{
+	var cube = me.GetItems(549);
+	var staff = me.GetItems(92);
+	var ammy = me.GetItems(521);
+	
+	if(me.areaid == 40 && staff.length > 0 && ammy.length > 0 && cube.length > 0){
+		Print(COLOR_5 + "Cubing Staff!");
+		NTR_MakeStaff();
+		NTR_GoCain();
+	}
+	else
+		return false;
+}
+function NTR_PlaceStaff() 
+{
+	var _horadricstaff = me.GetItems(91);
+	if(_horadricstaff.length == 0){			
+		Print("Don't have: " + COLOR_17 + "Horadric Staff");
+		NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Don't have Horadric Staff");
+		return;
+	}	
+	for(var b = 0; b < 1; b++){
+        if(_horadricstaff && _horadricstaff.length > 0 && _horadricstaff[0].itemloc == 0){  
+			var _orifice = NTC_FindUnit(NTC_UNIT_OBJECT, 152);  
+        } 
+        if(_orifice){  
+			if(GetDistance(me, _orifice) > 2)  
+			NTM_MoveTo(_orifice.areaid,_orifice.x+2, _orifice.y);  
+
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _orifice);  
+			NTC_Delay(1000);  
+        }	
+        NTC_ItemToCursor(_horadricstaff[0]); 
+        NTC_Delay(500);  
+        SubmitItem();   
+        NTC_Delay(1000);   
+        _horadricstaff = me.GetItems(91);   
+        if((!_horadricstaff || _horadricstaff.length < 1) && !me.itemoncursor){  
+			NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 152, -1, 2);  
+		} 
+	}
+	return true;
+}
+function NTR_MoveStaffToInventoryInt(item)
+{
+	var x, y, m, n;
+	var _havespace;
+	for(y = 0 ; y < 4 ; y++){
+		for(x = 0 ; x < 10 ; x++){
+			_havespace = true;
+			for(m = 0 ; m < item.ysize ; m++){
+				for(n = 0 ; n < item.xsize ; n++){
+					if(_NTCU_Inventory[y+m][x+n] == 1){
+						_havespace = false;
+						m = 4;
+						break;
+					}
+				}
+			}
+			if(_havespace){
+				if(!NTC_ItemToCursor(item))
+					return false;
+
+				for(m = 0 ; m < 80 ; m++){
+					if((m % 40) == 0)
+						me.ClickItem(0, 2, 0, 0);
+
+					NTC_Delay(100);
+
+					if(!me.itemoncursor)
+						break;
+				}
+				if(m >= 80)
+					return false;
+				for(m = 0 ; m < item.ysize ; m++){
+					for(n = 0 ; n < item.xsize ; n++)
+						_NTCU_Inventory[y+m][x+n] = 1;
+				}
+				NTC_Delay(200);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+function NTR_MoveStaff()
+{	
+	var i;
+	var _itemcounts = 0;
+	var _horadricstaff = me.GetItems(91)
+	var cube = me.GetItems(549);
+
+	for(i = 0 ; i < _horadricstaff.length ; i++){
+		if(_horadricstaff[i].itemloc == 3){
+			Print(COLOR_1 + "Staff in cube");
+			
+			Print(COLOR_8 + "Moving Staff out of cube!");
+			
+			NTC_Delay(1000);
+			
+			SetUIState(0x01, true);  		
+			
+			NTCU_OpenCubeInt(cube[0]);
+			
+			NTC_Delay(300);
+			
+			NTR_MoveStaffToInventoryInt(_horadricstaff[0]);
+			
+			NTCU_CloseCubeInt(cube[0]);
+			
+			me.Cancel(1);
+			
+			if(_horadricstaff.length > 0 && _horadricstaff[0].itemloc == 0)
+			Print(COLOR_5 + "Staff in inventory!");
+			return true;
+		}
+		else if(_horadricstaff.length < 0 && _horadricstaff[0].itemloc != 0){
+			Print(COLOR_5 + "Staff Not in inventory!");
+			return false;
+		}
+	}
+}
+function NTR_MakeStaff()
+{
+	var returnCheck = false;
+	var shaft = me.GetItems(92);
+	var vpramu = me.GetItems(521);
+	var cube = me.GetItems(549);
+	var _horadricstaff = me.GetItems(91);
+	if(shaft.length == 0){
+		Print("Don't have: " + COLOR_17 + "Shaft of Horadric Staff");
+		NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Don't have Shaft of Horadric Staff");
+		returnCheck = true;
+	}
+	if(vpramu.lengh == 0){
+		Print("Don't have: " + COLOR_17 + "Viper Amulet");
+		NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Don't have Viper Amulet");		
+		returnCheck = true;
+	}
+	if(cube.length == 0){
+		Print("Don't have: " + COLOR_17 + "Horadric Cube");
+		NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Don't have Horadric Cube");		
+		returnCheck = true;
+	}
+	if(returnCheck){
+		Print(COLOR_17 + "Do not have proper components for the  Horadric Staff");
+		return false;
+	}	
+	else if(!returnCheck){	
+		SetUIState(0x01, true);  		//opens inv
+		NTCU_MoveItemToCubeInt(cube[0], shaft[0]);
+		NTCU_MoveItemToCubeInt(cube[0], vpramu[0]);
+		NTCU_OpenCubeInt(cube[0]);
+		Transmute();
+		NTC_Delay(3000);
+		NTCU_ClearCubeInt(cube[0]);
+		NTCU_CloseCubeInt(cube[0]);
+		me.Cancel(1);
+		Print(COLOR_8 + "Staff made!");
+		NTR_MoveStaff();
+		if(_horadricstaff.length > 0)
+			return true;
+		else
+			return false;		
+	}
+}
+function NTR_ReadScroll()
+{
+	var i;
+	var _readbook = me.GetItems(646);
+	var returnCheck = false;
+	if(_readbook.length == 0){
+		Print("Don't have: " + COLOR_17 + "Scroll of Resistance!");
+		NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_1 + "Scroll of Resistance");		
+		returnCheck = true;
+	}
+	if(returnCheck){
+		Print(COLOR_17 + "Didn't get the Scroll of Resistance");
+		return false;
+	}	
+	else if(!returnCheck){
+	SetUIState(0x01, true);
+	if(_readbook.length > 0 && _readbook[0]){
+		for(i = 0; i < 5; i++){
+			me.ClickItem(1, _readbook[0]);	
+			Delay(500);	
+			if(me.itemoncursor)
+				break;
+		}
+	}
+	if(i < 5){
+		for(i = 0; i < 5; i++){
+			me.ClickItem(1, 0, 0, 0);	
+			Delay(500);	
+			if(!me.itemoncursor)
+				break;
+		}
+	}
+	me.Cancel(1);
+	Print(COLOR_8 + "My resistance has increased!");
+	if(_readbook.length > 0)
+		return true;
+	else
+		return false;
+	}
+}
+function NTR_OpenAltar()
+{
+	var _altar = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(2229));
+	if(!_altar){return false;}
+	if(_altar){
+		if(GetDistance(me, _altar) > 2){
+            NTM_MoveTo(_altar.areaid,_altar.x+2, _altar.y);   
+			NTC_Delay(100);
+            NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _altar);  
+            NTC_Delay(500);
+		}
+	}
+	return false;
+}
+function NTR_GetTome()
+{	
+	var _tome = NTC_FindUnit(NTC_UNIT_ITEM, 548);
+	if(!_tome){return FailSafeTome();}
+	if (_tome){				
+		for (i = 0; i < 20; i++){
+			if ((i % 5) == 0){
+				if (_tome.mode == 3 || _tome.mode == 5){
+					if (NTC_ClearCursor())
+					NTC_PingDelay(100);
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _tome);
+				}
+			}
+			NTC_PingDelay(100);
+			if (_tome.mode != 3 && _tome.mode != 5){
+				Print(COLOR_8 + "Picked up Tome!");
+				NTC_PingDelay(200);
+				break;
+			}
+		}
+	}
+	return false;	
+	function FailSafeTome(){
+		var altarcount = 0;
+		//attempts to get the tome 3 times after that it continues.
+		for(i = 1; i < 6 && (!_tome || _tome.mode != 0 || _tome.mode != 1 && _tome.mode != 3 || _tome.mode != 5) ; i++){
+			NTC_PingDelay(1000);
+			Say("!Attempt # " + i);
+			NTM_WalkTo(me.x-1, me.y-6);			
+			NTR_OpenAltar();
+			GrabTome();
+			i++;
+		}		
+		if( i >= 5 ){
+			Say("!Nothing I do works!");
+		}
+	}
+	function GrabTome(){
+		var _tome = NTC_FindUnit(NTC_UNIT_ITEM, 548);
+		var T = "Tome";
+		if(!_tome){return false;}
+		while(_tome.mode != 0){
+			Print(COLOR_5 + "Looking for the " + T + "...");
+			NTC_PingDelay(100);
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _tome);
+		}
+		NTC_PingDelay(100);
+		if(_tome.mode == 0){
+			Print(COLOR_8 + "Picked up the Tome");
+			NTC_PingDelay(200);
+		}
+		return false;
+	}
+}
+function NTR_GoHarrogath()
+{
+	Print(COLOR_5 + "Using Harrogath Portal");
+	var _gath = NTM_TakeUnit(NTC_UNIT_OBJECT, GetLocaleString(22646));
+	if(me.areaid == 103){
+		if(!_gath){return false;}
+		if(_gath){ 
+			NTC_Delay(100);
+         	NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _gath); 			
+		}
+	}
+	return false;
+}
+function NTR_GetHammer()
+{
+	for (i = 0; i < 20; i++){
+		var _hammer = NTC_FindUnit(NTC_UNIT_ITEM, 90);
+		if (_hammer)
+		break;
+	}						
+	for (i = 0; i < 20; i++){
+		if ((i % 5) == 0){
+			if (_hammer.mode == 3 || _hammer.mode == 5){
+				if (NTC_ClearCursor()){
+					NTC_Delay(100);
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _hammer);
+				}
+			}
+		}
+		NTC_Delay(100);
+		if (_hammer.mode != 3 && _hammer.mode != 5){
+			Print(COLOR_8 + "Picked up Hellforge Hammer!");
+			NTC_Delay(200);
+			break;
+		}
+	}
+	return false;
+}
+function NTR_GoForge()
+{
+	var _forge = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3318));
+	if(_forge)
+	{		
+		if(NTA_ClearPosition()) {
+			NTSI_PickItems();
+		} 
+		else {
+			NTC_Delay(1500);
+		}
+		NTM_MoveTo(_forge.areaid, _forge.x+2, _forge.y-1);			
+		NTA_ClearPosition(40);		
+		NTC_Delay(150);		
+		NTR_Hammer();		
+		NTM_MakeTP();
+		Say("Hammer up!");		
+		while(!NTC_IsQuesterIn()) {
+			NTC_TPGuard(10);
+		}								
+		while(!NTC_IsQuesterOut()) {
+			NTC_TPGuard(10);
+		}				
+		NTM_MoveTo(_forge.areaid, _forge.x+5, _forge.y);			
+		NTM_MakeTP();		
+		Say("Hellforge up!");		
+		while(!NTC_IsQuesterIn()) {
+			NTC_TPGuard(20);
+		}		
+		while(!NTC_IsQuesterOut()) {
+			NTC_TPGuard(20);
+		}						
+		NTM_MoveTo(_forge.areaid, _forge.x+5, _forge.y);	
+		NTC_Delay(550);				
+		NTSI_PickItems();		
+		NTC_SendMsgToScript("loader.ntj", "end");		
+		return;
+	}
+return;
+}
+function NTR_SmashNdatShit()
+{
+	if(me.areaid == 107){
+		var _forge = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3318));
+		if(!_forge){
+			return false;
+		}
+		if(_forge){
+			if(GetDistance(me, _forge) > 5){
+				NTM_MoveTo(_forge.areaid,_forge.x+3, _forge.y);   
+				NTC_Delay(150);
+				
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _forge);
+				NTC_Delay(3000);
+				
+				for(var i = 0 ; i < 5 && _forge ; i++){
+					NTC_Delay(150);
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _forge);  
+				}
+				NTC_Delay(2500);
+			}
+		}
+	}
+	return false;
+}
+function NTR_SSCheck()
+{
+	var i;
+	var _soulStone = me.GetItems(551);		
+	for(i = 0 ; i < _soulStone.length ; i++){
+		if(_soulStone[0].itemloc == 0){
+			Print(COLOR_5 + "Soulstone in Inventory");
+		}
+		else{
+			Print(COLOR_1 + "Soulstone Missing!");
+			NTC_SendLogToOOG(NTC_LOG_COMMON, me.charname + ": " + COLOR_11 + "Soulstone Missing");		
+			NTR_GoCain();
+		}
+	}
+	return false;
+}
+function NTR_Hammer()
+{
+	var _hammer = NTC_FindUnit(NTC_UNIT_ITEM, GetLocaleString(2194));
+	if(_hammer){
+		if (_hammer.mode == 3 || _hammer.mode == 5){
+			NTM_MoveTo(me.areaid, _hammer.x, _hammer.y);
+		}
+	}
+	if(!_hammer){
+		Say("No Hammer here dude");
+		NTC_SendMsgToScript("loader.ntj", "end");
+	}
+	NTC_Delay(100);	
+	return false;
+}
+function NTR_ClearSpot(range,pickit,delay)
+{
+	for (i = 0; i < 20; i++){
+		if ((i % 5) == 0){
+			NTC_Delay(delay);//wait for monsters to draw near
+			NTR_ClearRushee();
+			NTA_ClearPosition(range, pickit);
+		}
+	}
+	return false;
+}
+function NTR_ClearRushee(area)
+{	
+	area = me.areaid;
+	var _player = GetPlayerUnit();
+	var _leaderUnit = GetLeaderUnit(_player.name);
+	
+	while(_player.GetNext()){
+		if(_player.name !== me.name && _player.areaid === area){
+			if(GetDistance(me, _leaderUnit) < 1){
+				NT_GetCloserIntS(_leaderUnit);
+				NTM_MoveTo(_player.areaid,_player.x+1,_player.y, 0);
+				return NTA_ClearPosition(15);
+			}
+			else{
+				if(GetDistance(me, _leaderUnit) <= GetDistance(me, _leaderUnit) || GetDistance(me, _leaderUnit) >= GetDistance(me, _leaderUnit)){
+					NT_GetCloserIntS(_leaderUnit);
+					return NTA_ClearPosition(15);
+				}
+			}
+			return NTA_ClearPosition(10);
+		}
+		break;
+	}
+	return false;
+}
+function NTR_CheckLocation()
+{
+	if(NTC_InTown()){
+		if(!NTTM_TownMove("portalspot")){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		}
+	}
+	NTC_CancelOut(0);
+	NTC_Delay(100);	
+		
+	return false;
+}
+function NTR_TakePortal()
+{
+	var _prearea = me.areaid;
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226), 10);
+	if(!_portal)
+		return false;
+
+	do{
+		Print(COLOR_5 + "Using Portal");
+		if(GetDistance(me, _portal) < 15){
+			for(var i = 0 ; i < 20 ; i++){
+				if((i % 5) == 0){
+					if(i == 10)
+					NTM_MoveTo(_prearea, me.x+6, me.y+6);
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+				}
+				NTC_Delay(200);
+				if(me.areaid != _prearea)
+					break;
+			}
+			while(me.areaid == 0)
+				NTC_Delay(200);
+			if(me.areaid == _prearea)
+				return false;
+			NTC_Delay(NTConfig_AreaDelay);
+			return true;
+		}
+	} 
+	while(_portal.GetNext());
+	
+	return false;
+}
+function NTR_ClearLevel(pickitem, safelevel) {
+	var i;
+	var _room, _rooms;
+	var _distance, _minindex, _mindistance;
+	_room = GetRoom();
+	if (!_room) { return false; }
+	switch (arguments.length){
+	case 0:
+		pickitem = true;
+		break;
+	case 1:
+		safelevel = 2;
+		break;
+	default:
+		if ((NTConfig_CheckSelfSafe.length < 1) && (NTConfig_CheckMercSafe.length < 1)) { safelevel = 0; }
+		break;
+	}
+
+	_rooms = new Array();
+
+	do {
+		_rooms.push([parseFloat(_room.x * 5 + _room.xsize * 5 / 2), parseFloat(_room.y * 5 + _room.ysize * 5 / 2)]);
+	} while(_room.GetNext());
+
+	while (_rooms.length > 0) {
+		_mindistance = 100000;
+		
+		if(me.GetQuest(1, 4) || me.GetQuest(1,12) && me.GetQuest(1,0)){
+			NTR_LeaveDen();
+			break;
+		}
+		for (i = 0; i < _rooms.length && !me.GetQuest(1,4) ; i++) {
+			_distance = GetDistance(me.x, me.y, _rooms[i][0], _rooms[i][1]);
+
+			if (_distance < _mindistance) {
+				_minindex = i;
+				_mindistance = _distance;
+			}
+		}
+		if (NTM_MoveTo(me.areaid, _rooms[_minindex][0], _rooms[_minindex][1], 1, false, false)) {
+			if (!NTA_ClearRoom(pickitem, safelevel)) { return false; }
+				
+			NTP_DoPrecast(false);
+		}
+		_rooms.splice(_minindex, 1);
+	}
+	return true;
+}
+function NTR_ClearDen(pickitem, safelevel) {
+	var i;
+	var _room, _rooms;
+	var _distance, _minindex, _mindistance;
+	_room = GetRoom();
+	if (!_room) { return false; }
+	switch (arguments.length) {
+	case 0:
+		pickitem = true;
+		break;
+	case 1:
+		safelevel = 2;
+		break;
+	default:
+		if ((NTConfig_CheckSelfSafe.length < 1) && (NTConfig_CheckMercSafe.length < 1)) { safelevel = 0; }
+		break;
+	}
+	_rooms = new Array();
+	do {
+		_rooms.push([parseFloat(_room.x * 5 + _room.xsize * 5 / 2), parseFloat(_room.y * 5 + _room.ysize * 5 / 2)]);
+	} while(_room.GetNext());
+	while (!NTC_IsQuesterOut() && _rooms.length > 0) {
+		_mindistance = 100000;
+		for (i = 0; i < _rooms.length; i++) {
+			_distance = GetDistance(me.x, me.y, _rooms[i][0], _rooms[i][1]);
+
+			if (_distance < _mindistance) {
+				_minindex = i;
+				_mindistance = _distance;
+			}
+		}
+		if (NTM_MoveTo(me.areaid, _rooms[_minindex][0], _rooms[_minindex][1], 1, false, false)) {
+			if (!NTA_ClearRoom(pickitem, safelevel)) { return false; }
+				
+			if(NTConfig_IdInField){
+				NT_FieldID();
+			} 
+			NTP_DoPrecast(false);
+		}
+		_rooms.splice(_minindex, 1);
+	}
+	return true;
+}
+function NTR_Den()
+{
+	if(me.areaid == 8){
+		NTR_ClearLevel(false);
+	}
+}
+function NTR_LeaveDen()
+{
+	if(me.GetQuest(1, 4) && me.GetQuest(1, 1) && me.areaid == 8){
+		Print(C_DARK_GREEN + "Den Quest Complete");
+		NTC_Delay(300);
+		if(!NTR_UseScrollOfTownPortal()){
+			Say("Cant TownPortal");
+		}
+		NTR_TakePortal();
+	}
+	if(me.areaid === 1)
+		return NTR_GoAkara();
+}
+function GetLeaderUnit(name){
+	var _unit = NTC_FindUnit(NTC_UNIT_PLAYER);	
+	if (_unit){
+		do {
+			if (_unit.name === name){
+				return _unit;
+			}
+		} while(_unit.GetNext());
+	}	
+	return false;
+}
+
+function NTR_RetrieveRusheeName() { //using Rugruth's NTR_RetrieveRushersName to get Rushee's Name
+	var rusheeName ="";
+	rusheeName = NT_File("logs/messagecomands/rushbot-rushee.txt", 0);
+	
+	return rusheeName;
+}
+
+function NTR_RetrieveRusherName() {
+	var leaderName="";
+	leaderName = NT_File("logs/messagecomands/rushbot-rushername.txt", 0);
+	
+	return leaderName;
+}
+
+function NTR_FindRusher() {
+	var count = 0;
+	var _unit;
+	var found = false;	
+	var _rusher; 
+	
+	do{
+        NTC_Delay(2000);
+		_rusher = NTR_RetrieveRusherName();
+		if(me.mode != 17){ //added support if rushee dies keeps from spaming while dead
+			Print(COLOR_8 + "Trying to find Rusher: " + _rusher);
+		}
+		_unit = GetPlayerUnit();
+		do {
+		  if (_unit.name == _rusher)
+		  {
+			found = true;
+			break;
+		  }
+		} while (_unit.GetNext());
+		count ++;
+	} while ((!found) && (count < 10));	
+	
+	if (count<10) {
+		if(me.mode != 17){ //added support if rushee dies keeps from spaming while dead
+			Print(COLOR_8 + "Rusher found");
+		}
+		return _rusher;
+	}
+	else {
+		Print(COLOR_8 + "Taking too long to find rusher. Exiting game");
+		ExitGame();
+	}
+}
+
+function NT_GetCloserIntS(unit){ 
+	if(GetDistance(me, unit) > 2)
+		return NTM_MoveTo(unit.areaid, unit.x+1, unit.y);
+	return true;
+}
+
+function NTR_RetrieveRusheePos() {
+	var _pos;
+        
+	_pos = NT_File("logs/messagecomands/rushbot-"+ me.account + "-rusheepos.txt", 0);
+	if (!_pos) 
+            _pos = me.charloc;
+        
+	return _pos;
+}
+
+function NTR_IncrementRusheePos() {
+	var _pos;
+        
+	_pos = NTR_RetrieveRusheePos();
+	NT_File("logs/messagecomands/rushbot-"+ me.account + "-rusheepos.txt", 1, ++_pos);        
+}
+

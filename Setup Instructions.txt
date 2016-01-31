@@ -1,0 +1,73 @@
+-------------------------------------------------------------------------------
+----------STEPS-TO-SETUP-RUSHEE/RUSHER-----------------------------------------
+-------------------------------------------------------------------------------
+--------RUHSEELEADER/RusheeLeecher-CHAR-CONFIG-SETUP---------------------------
+-------------------------------------------------------------------------------
+
+1. Do NOT need to edit any Rushee Char configs.
+
+-------------------------------------------------------------------------------
+-------------RUSHER-CHAR-CONFIG-SETUP------------------------------------------
+-------------------------------------------------------------------------------
+
+1. Open scripts/NTRush/rush_configs
+
+2. Copy the Config file of your Rushers character type(if you're rushing a druid copy NTConfig_Druid, Rename to NTConfig_Druid_CHARACTERNAME).
+
+3. Open the Character file you just Renamed and set the rushbots you want to run.
+
+4. Find this line  --  NTConfig_AttackSkill[0] = 0; 
+
+   - Set all these to the skills you'll be using.
+
+5. Setup your Inventory and Belt
+
+6. Remember to save all changes and move on to EtalManager-Setup.
+
+-------------------------------------------------------------------------------
+-------------ETALMANAGER-SETUP-------------------------------------------------
+----------------RUSHEELeader---------------------------------------------------
+-------------------------------------------------------------------------------
+1. Make a new account full of to be rushed characters
+
+2. Set Account Name = ACCOUNT_FROM_STEP_ONE
+
+3. Choose RusheeLeader.ntj as the Entry Point/Starter File
+
+4. Find Game Name and Game PW, Uncheck these
+
+5. Set the Game Name to your preference
+
+6. Set the Game PW to your preference
+-------------------------------------------------------------------------------
+-------------ETALMANAGER-SETUP-------------------------------------------------
+---------------RUSHEELeecher---------------------------------------------------
+-------------------------------------------------------------------------------
+1. Make new accounts full of to be rushed characters
+
+2. Set Account Name = ACCOUNT_FROM_STEP_ONE
+
+3. Choose RusheeLeecher.ntj as the Entry Point/Starter File
+
+4. Find Game Name and Game PW, Uncheck these
+
+5. Set the Game Name to /f l
+
+6. Set the Game PW to blank
+
+-------------------------------------------------------------------------------
+-------------ETALMANAGER-SETUP-------------------------------------------------
+------------------RUSHER-------------------------------------------------------
+-------------------------------------------------------------------------------
+
+1. Choose RushBot.ntj as the Entry Point/Starter File
+
+2. Find Game Name and Game PW, Uncheck these
+
+3. Set the Game Name to /f l
+
+4. Set the Game PW to blank
+
+-------------------------------------------------------------------------------
+-----------REMEMBER-TO-SAVE-YOUR-PROFILES!-------------------------------------
+-------------------------------------------------------------------------------

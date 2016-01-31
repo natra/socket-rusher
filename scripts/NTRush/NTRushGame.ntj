@@ -1,0 +1,218 @@
+var Rev = "ERusher v1.0";
+var CurScriptIndex = 0;
+var LastScript = false;
+
+var InitLife;
+var Corpses = 0;
+var done = false;
+
+function D2NTStatus(where, time, message) { return SendCopyData('D2NT Manager', null, where << 16 | time, message); }
+function NTMain() {
+	Delay(1000);
+
+	InitLife = me.hp;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+	Include("libs/common/NTExp.ntl");
+
+	NT_LoadConfig();
+	NTE_InitializeStats();
+
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	// ubi21 Enigma reset start
+	////////////////////////////
+	NTU_LogExitStatus("F");
+
+	// ubi21 Enigma reset end
+	////////////////////////////
+
+	if (NTConfig_StartDelay > 0) {
+		NTC_Delay(NTConfig_StartDelay);
+	}
+
+	GetPath(me.areaid, me.x, me.y, me.x, me.y, true);
+
+	SetUIState(0x0A, true);
+
+	if (!NTT_PutBackEnigma()) {
+		NTC_Delay(240000);
+		ExitGame();
+	}
+
+	Corpses = NTT_GetCorpses();
+	if (Corpses > 0 || InitLife < 10) {
+		NTU_DeathLog(Corpses, InitLife);
+	}
+
+	if (!done) {
+		NTT_ClearInventory();
+		NTT_ClearBelt();
+
+		if (!NTT_LookForEnigma()) {
+			if (GetUIState(0x01)) {
+				SetUIState(0x01, false);
+			}
+			NTC_Delay(240000);
+			ExitGame();
+		}
+
+		Load("NTRush/rush_tools/NTRushTools.ntj");
+
+		RegisterEvent(EVENT_GAMEMSG, GameMsgEvents);
+		RegisterEvent(EVENT_SCRIPTMSG, ScriptMsgEvents);
+
+		Include("libs/common/NTSnagit.ntl");
+		NTSI_ClearIgnoredItems();
+		Load("NTRush/rush_tools/loader.ntj");
+		while (!done) {
+			Delay(1000);
+		}
+	}
+
+	NTE_ComputeStats(false);
+	ExitGame();
+}
+
+function GameMsgEvents(msg, type) {
+	var date, logfile, script;
+
+	if (type == 1 && msg.toLowerCase().indexOf("error") != -1) {
+		date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+		logfile = FileOpen("logs/" + me.charname + "_errorlog.txt", 2);
+		if (!logfile) {
+			logfile = FileOpen("logs/" + me.charname + "_errorlog.txt", 1);
+		}
+
+		logfile.WriteLine(date + " - " + msg);
+		logfile.Close();
+	} else if (type == 0 && msg.indexOf(me.charname) != -1 && msg.indexOf("restart") != -1) {
+		script = NTC_FindScript("loader.ntj");
+		if (script.running) {
+			script.Stop();
+		}
+		NTTM_CheckAct();
+		Load("NTRush/rush_tools/loader.ntj");
+	}
+}
+
+function NT_KeyEvents(keycode)
+{
+	var _script;
+	switch(keycode) {
+		case Do_PauseBot:
+		_script = NTC_FindScript(NTConfig_Script[CurScriptIndex]);
+			if(_script) {
+				if(_script.running) {
+					_script.Stop();
+					NT_ClearMessages();
+					NTC_Delay(300);
+					ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+					SetStatusText(COLOR_1 + Rev + "    Paused " + NTConfig_Script[CurScriptIndex]);
+				}
+				else {
+					Load("NTRush/rush_configs/" + NTConfig_Script[CurScriptIndex]);
+					SetStatusText(Rev + " " + NTConfig_Script[CurScriptIndex]);
+				}
+			}
+			break;
+		case Do_PrevScript:
+			_script = NTC_FindScript(NTConfig_Script[CurScriptIndex]);
+
+			if(_script.running) {
+				_script.Stop();
+				NT_ClearMessages();
+				NTC_Delay(300);
+				ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+				SetStatusText(COLOR_11 + Rev + " Stopped " + NTConfig_Script[CurScriptIndex]);
+				break;
+			}
+			else {
+				for(i=0; i<NTConfig_Script.length-1; i++) {
+					if(CurScriptIndex < NTConfig_Script.length-1)
+						CurScriptIndex++;
+					else
+						CurScriptIndex = 0;
+				}
+				SetStatusText(COLOR_14 + Rev + " Back to " + NTConfig_Script[CurScriptIndex]);
+			}
+			break;
+		case Do_NextScript:
+			_script = NTC_FindScript(NTConfig_Script[CurScriptIndex]);
+
+			if(_script.running) {
+				_script.Stop();
+				NT_ClearMessages();
+				SetStatusText(COLOR_11 + Rev + " Stopped " + NTConfig_Script[CurScriptIndex]);
+			}
+			else if(++CurScriptIndex < NTConfig_Script.length)
+				SetStatusText(COLOR_14 + Rev + " Skipped to " + NTConfig_Script[CurScriptIndex]);
+			else if(++CurScriptIndex >= NTConfig_Script.length) {
+				CurScriptIndex = 0;
+				SetStatusText(COLOR_2 + Rev + " Skipped to " + NTConfig_Script[CurScriptIndex]);
+			}
+			break;
+		case Do_DropItems:
+			NTU_DropItems();
+			break;
+		case Do_DevTools:
+			NTU_DevelopementTools();
+			break;
+		case Do_CoordLog:
+			NTU_LogPrint("logs/testlog/"+me.charname+"-Coords.txt", " New Coord[" + me.x + ", " + me.y + "] " );
+			break;
+		case Do_HotKeyList:
+			Key_HotList();
+			break;
+		case Do_CursorILvL:
+			NTU_CursorILvl();
+			break;
+		case Do_StatsLog:
+			NTU_CheckMyStats();
+			break;
+		case Do_PrintCoord:
+			NTU_CheckCoord();
+			break;
+		case Do_CheckSpace:
+			if(CheckStashSpace)
+				NTT_CheckFreeStashSpace(true);
+			if(CheckInvSpace)
+				NTT_CheckFreeInventorySpace(true);
+			break;
+		case Do_NipCheck:
+			NTU_TLNipCheck();
+			break;
+		case Do_InvTxtLog:
+			NTU_TLInventory();
+			break;
+		case Do_CheckBPs:
+			T_BPsPrint();
+			break;
+		case Do_ExitGame:
+			Print(COLOR_4 + "Calculating stats for game!");
+			NTE_ComputeStats(false);
+			ExitGame();
+			break;
+	}
+}
+
+function ScriptMsgEvents(msg) {
+	var script;
+
+	switch (msg) {
+	case "end":
+		script = NTC_FindScript("loader.ntj");
+		if (script.running) {
+			script.Stop();
+		}
+		done = true;
+		break;
+	case "mule":
+	case "clone":
+	case "pause":
+		NTC_SendMsgToScript("loader.ntj", "pause");
+		break;
+	}
+}

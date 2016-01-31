@@ -1,0 +1,85 @@
+//###################---RHPWATCH---#####################
+//## Written by goodstuff for Automated Rushee/Rusher ##
+//## Credits to Rugruth for using some of his code ;D ##
+//######################################################
+var rusheeName;
+
+function NTMain(){
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+	
+	RegisterEvent(EVENT_GAMEMSG, chat);
+	
+	Print(COLOR_3 + "RHPWatch Loading...");
+	
+	GetPlayer();
+	
+	 while (1){ 
+		Delay(200);
+	}
+}
+function GetPlayer() // using Rugruth's NTR_FindRusher() modified to get Rushee name
+{
+	var count = 0;
+	var _unit;
+	var found = false;
+	var _rushee; 
+	
+	do{
+        NTC_Delay(200);
+		_rushee = NTR_RetrieveRusheeName();
+		
+		_unit = GetPlayerUnit();
+		do{
+		  if(_unit.name == _rushee){
+			found = true;
+			break;
+		  }
+		}while(_unit.GetNext());
+		count ++;
+	}while((!found) && (count < 20));	
+	
+	if (count<20){
+		NTC_Delay(300);
+		Print(COLOR_3 + "RHPWatch Loaded : " + COLOR_8 + _rushee + "'s " + "HP on Watch");
+		return _rushee;
+	}
+}
+
+function chat(msg, type)
+{	
+	if(rusheeName == null){
+		rusheeName = NTR_RetrieveRusheeName();
+	}
+	
+	if(type == 0){
+		var _split = msg.split(":");
+		if(_split.length >= 1 && _split[1] != undefined){
+			var _sender = _split[0].substring(3, _split[0].length - 3);
+			var _msg = _split[1].substring(1);
+			if(_sender == rusheeName){
+				switch(_msg){
+					case "I Need An Adult!" :
+						Print(COLOR_3 + "RHPWatch Activated!");
+						NTR_CoverRushee();
+						break;
+					
+					// case "I died I need a sec" :
+						// Print(COLOR_3 + "Waiting..");
+						// for(i = 0; i < 14; i++){
+							// NTC_PingDelay(1000);
+							// i++;
+						// }
+						// break;
+				}
+			}
+		}
+	}	
+    else if(type == 4 && ((msg.indexOf("weaken") != -1) || (msg.indexOf("timeout") != -1))&& (msg.indexOf(rusheeName) != -1))
+    {
+        NTC_Delay(750);
+        ExitGame();
+    }
+
+}

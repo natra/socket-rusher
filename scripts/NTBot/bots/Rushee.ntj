@@ -1,0 +1,485 @@
+// Written by goodstuff for Automated Rushee/Rusher 7/22/13
+
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	NTConfig_Leader = NTR_FindRusher();
+	
+	RegisterEvent(EVENT_GAMEMSG, chat);
+
+	while(1){	
+		if(me.hp < 1){
+			NTR_Death();
+		}		
+		if(NTC_InTown()){
+			NTR_Heal();
+		}		
+		if(!NTC_InTown()){
+			NTR_HPCheck();
+		}		
+		if(me.hp > 1){
+			Questing();
+		}		
+		NTC_Delay(250);		
+	}
+					
+}
+
+// #####DO_NOT_EDIT_THESE###### //
+	var LocationChecka1 = false;
+	var LocationChecka2 = false;
+	var LocationChecka3 = false;
+// ############################# //
+// Main Script Function ---------------------------------------------
+function Questing(area)
+{
+	area = me.areaid;
+	
+	switch(area){
+	
+		case 1 : // ACT 1 ---------------------------------------------
+			if(NTC_InTown() && !LocationChecka1){			
+				NTR_CheckLocation();
+				LocationChecka1 = true;
+				return LocationChecka1;
+			}
+			if((me.GetQuest(6,12) && me.GetQuest(6,0) || me.GetQuest(6,1)) && me.areaid == 1){
+				return NTR_GoEast();
+			}
+			else if(me.GetQuest(7,0)){
+				NTTM_TownMove("waypoint");
+				NTM_TakeWaypoint(40);
+				NTR_CheckLocation();
+			}
+			break;
+			
+		case 8 :
+			if((!me.GetQuest(1, 4) && !me.GetQuest(1, 1) || !me.GetQuest(1,12) && !me.GetQuest(1,0)) && me.areaid == 8){
+				NTC_Delay(1000);
+				NTR_ClearLevel(false);
+			}
+			else if((me.GetQuest(1, 4) && me.GetQuest(1, 1) || me.GetQuest(1,12) && me.GetQuest(1,0)) && me.areaid == 8){
+				NTC_PingDelay(300);
+				if(!NTR_UseScrollOfTownPortal()){
+					Say("Cant TownPortal");
+				}
+			}		
+			break;
+			
+		case 40 : // ACT 2 ---------------------------------------------
+			if(NTC_InTown()){
+				NTR_CubeStaff();
+			}
+			if( NTC_InTown() && !LocationChecka2){
+				NTR_CheckLocation();
+				LocationChecka2 = true;
+				return LocationChecka2;
+			}
+			if(me.GetQuest(14, 4)){
+				NTR_TalkJer();
+			}
+			else if(me.GetQuest(15,0)){
+				if(!NTTM_CheckAct(3)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+					return;
+				}
+			}
+			break;
+			
+		case 75 : // ACT 3 ---------------------------------------------
+			if((!me.GetQuest(22,12) && !me.GetQuest(22,0)) && !LocationChecka3){
+				NTR_CheckLocation();
+				LocationChecka3 = true;
+				return LocationChecka3;
+			}
+			if( NTC_InTown() && !LocationChecka3){
+				NTR_CheckLocation();
+				LocationChecka3 = true;
+				return LocationChecka3;
+			}
+			else if(me.GetQuest(23,0)){
+				NTTM_TownMove("waypoint");
+				NTM_TakeWaypoint(103);
+			}
+			break;
+			
+		case 103 : // ACT 4 ---------------------------------------------
+			if((!me.GetQuest(26,12) && !me.GetQuest(26,0)) && NTC_InTown() && !LocationChecka3){
+				NTR_CheckLocation();
+				LocationChecka3 = true;
+				return LocationChecka3;
+			}	
+			else if(me.GetQuest(28,0)){
+				NTTM_TownMove("waypoint");
+				NTM_TakeWaypoint(109);
+			}	
+			break;
+		
+		case 109 : // ACT 5 ---------------------------------------------
+			NTC_CheckPlayer(NTConfig_Leader);
+			if((!me.GetQuest(40,12) && !me.GetQuest(40,0)) && NTC_InTown() && !LocationChecka3){
+				NTR_CheckLocation();
+				LocationChecka3 = true;
+				return LocationChecka3;
+			}
+			break;	
+	}
+	return false;
+}
+
+
+// Leader Commands ---------------------------------------------
+
+function chat(msg, type)
+{
+var i;
+    if(type == 0){
+        var _split = msg.split(":");
+        if(_split.length >= 1 && _split[1] != undefined){
+            var _sender = _split[0].substring(3, _split[0].length - 3);
+            var _msg = _split[1].substring(1);
+            if(_sender == NTConfig_Leader){
+                switch(_msg){				
+				// ACT 1 Case's---------------------------------------------
+					case "Den up!" :
+						NTC_Delay(200);
+						if(me.areaid == 1){
+							NTM_UsePortal("BluePortal", 8, NTConfig_Leader);
+						}
+						if(me.areaid == 8){
+							NTR_Den();
+							if(me.GetQuest(1, 4) && me.GetQuest(1, 1) && me.areaid == 8){
+								NTR_LeaveDen();
+							}
+						}		
+						break;
+						
+                    case "Andariel up!" :
+						NTC_Delay(200);
+						for(var i = 0 ; i < 100 && me.areaid == 1 ; i++){
+							NTM_UsePortal("BluePortal", 37, NTConfig_Leader);
+						}
+						break;
+
+                    case "Andariel is dead!" :
+						if(me.areaid == 37 && me.mode != 17){
+							NTC_Delay(200);
+							NTR_TakePortal();
+							if(me.areaid === 1)
+								NTR_GoEast();
+						}
+						break;  
+				// ACT 2 Case's---------------------------------------------
+					case "Radament up!" :
+						if(me.areaid == 40){
+							NTM_UsePortal("BluePortal", 49, NTConfig_Leader);
+						}
+						break;
+						
+					case "Radament dead!" :
+						if(me.areaid == 49 && me.mode != 17){
+							NTR_TakePortal();
+						}
+						break;
+						
+					case "Get the book!" :
+						if (me.areaid == 40){
+							NTM_UsePortal("BluePortal", 49, NTConfig_Leader);
+						}
+						while(me.areaid == 49){
+							NTC_PingDelay(300);
+							NTR_GetBook();
+							NTC_PingDelay(500);
+							NTR_TakePortal();
+							NTC_PingDelay(500);
+							NTR_ReadBook();
+							NTR_GoCain();
+						}
+						break;
+						
+					case "Cube up!" :
+						NTC_PingDelay(100);
+						if(me.areaid == 40){
+							NTM_UsePortal("BluePortal", 60, NTConfig_Leader);
+						}
+						while(me.areaid == 60){
+							NTR_GetCube();
+							NTC_PingDelay(500);
+							NTR_TakePortal();
+							NTC_PingDelay(500);
+							NTR_GoCain();
+						}						
+						break;
+
+					case "Ammy up!" :
+						NTC_PingDelay(100);
+						if(me.areaid == 40){
+							NTM_UsePortal("BluePortal", 61, NTConfig_Leader);
+						}
+						while(me.areaid == 61){
+							NTR_OpenAmmy();
+							NTC_PingDelay(500);
+							NTR_GetAmmy();
+							NTR_TakePortal();
+							NTC_PingDelay(1000);
+							NTR_GoCain();
+						}							
+						break;
+
+					case "Staff up!" :
+						NTC_Delay(100);
+						if(me.areaid == 40){
+							NTM_UsePortal("BluePortal", 64, NTConfig_Leader);
+						}
+						if(me.areaid == 64){
+							NTR_GetStaff();
+							NTC_Delay(250);
+							NTR_TakePortal();
+						}						
+						break;
+
+					case "Talk to Drognan!" :
+						NTR_GoDrognan();
+						break;
+
+					case "Summoner up!" :
+						NTC_Delay(100);
+						if(me.areaid == 40){
+							if(!NTM_UsePortal("BluePortal", 74, NTConfig_Leader)){
+								NTC_Delay(300);
+								NTR_GoCain();
+								NTC_Delay(300);
+								NTM_UsePortal("BluePortal", 74, NTConfig_Leader);
+							}
+						}
+						break;
+
+					case "Summoner is dead!" :
+						if(me.areaid == 74 && me.mode != 17){
+							NTC_PingDelay(200);
+							NTR_TakePortal();
+							NTC_PingDelay(600);
+						}
+						if(me.areaid == 40){
+							NTR_GoCain();
+						}
+						break;
+
+					case "Leeches Talk to Tyrael!" :
+						if(me.areaid == 40){
+							NTC_PingDelay(500);
+							NTM_UsePortal("BluePortal", 73, NTConfig_Leader);
+						}
+						NTC_PingDelay(500);
+						NTR_TalkTyraelSpirit();
+						NTR_OpenQuest();
+						NTC_PingDelay(500);
+						NTR_TakePortal();
+						NTR_TalkJer();					
+						break;
+
+					case "Duriel up!" :
+						if(me.areaid == 40){
+							NTC_CheckPlayer(NTConfig_Leader);
+							if(!NTM_UsePortal("BluePortal", _leaderareaid, NTConfig_Leader)){
+								NTC_Delay(300);
+								NTR_GoCain();
+								NTC_Delay(300);
+								NTM_UsePortal("BluePortal", _leaderareaid, NTConfig_Leader);
+							}
+						}
+						NTR_PlaceStaff();
+						NTC_PingDelay(500);
+						NTR_TakePortal();
+						break;
+				// ACT 3 Case's---------------------------------------------	
+					case "Tome up!" :
+						NTC_Delay(100);
+						if(me.areaid == 75){
+							NTM_UsePortal("BluePortal", 94, NTConfig_Leader);
+						}
+						if(me.areaid == 94){
+							NTC_PingDelay(300);
+							NTR_OpenAltar();
+							NTC_PingDelay(300);
+							NTR_GetTome();
+							NTC_PingDelay(300);
+							NTR_TakePortal();
+						}
+						if(me.areaid == 75){
+							NTC_PingDelay(300);
+							NTR_GoAlkor();
+							NTC_PingDelay(300);
+							NTR_CheckLocation();
+						}
+						break;
+					case "Council up!" :
+						NTC_Delay(100);
+						if(me.areaid == 75){
+							me.Cancel(1);
+							NTM_UsePortal("BluePortal", 83, NTConfig_Leader);
+						}
+						break;
+
+					case "Council is dead!" :
+						if(me.mode != 17){
+							NTC_Delay(100);
+							NTR_TakePortal();
+							NTC_PingDelay(500);
+							NTR_GoCain();
+						}
+						break;
+
+					case "Mephisto up!" :
+						NTC_Delay(100);
+						if(me.areaid == 75){
+							NTM_UsePortal("BluePortal", 102, NTConfig_Leader);
+						}
+						break;
+
+					case "Mephisto is dead!" :
+						if(me.areaid == 102 && me.mode != 17){
+							NTC_Delay(100);
+							NTM_MoveTo(me.areaid, 17590, 8068);
+							NTC_Delay(1500);
+							if(NTM_TakeUnit(NTC_UNIT_OBJECT, 342))
+							NTC_Delay(1500);
+						}
+						break;
+						
+				// ACT 4 Case's---------------------------------------------
+					case "Hammer up!" :
+						if(me.areaid == 103){
+							NTC_PingDelay(200);
+							NTR_GoCain();
+							NTC_PingDelay(400);
+							NTR_SSCheck();
+							NTC_PingDelay(400);
+							NTM_UsePortal("BluePortal", 107, NTConfig_Leader);
+						}
+						if(me.areaid == 107){
+							NTC_PingDelay(200);
+							NTC_SwapWeapons();
+							NTC_PingDelay(500);
+							NTR_GetHammer();
+							NTC_PingDelay(200);
+							NTR_TakePortal();
+						}
+						break;
+					
+					case "Hellforge up!" :
+						if(me.areaid == 103){
+							NTC_PingDelay(200);
+							NTR_TakePortal();
+						}
+						while(me.areaid == 107){
+							NTC_PingDelay(300);
+							NTR_SmashNdatShit();
+							NTC_PingDelay(200);
+							NTR_TakePortal();
+						}
+						if(me.areaid == 103){
+							NTC_PingDelay(200);
+							NTC_SwapWeapons();
+						}					
+						break;
+
+					case "Izzy up!" :
+						if(me.areaid == 103){
+							NTM_UsePortal("BluePortal", 105, NTConfig_Leader);
+						}
+						break;
+
+					case "Izzy dead!" :
+						NTC_Delay(100);
+						if(me.areaid == 105 && me.mode != 17){
+							NTC_PingDelay(500);
+							NTR_TakePortal();
+							NTC_PingDelay(500);
+							NTR_TalkTyrael();
+						}
+						break;
+
+					case "Diablo up!" :
+						NTC_Delay(100);
+						if(me.areaid == 103){
+							NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+						}
+						if(me.areaid === 108){
+							NTM_MoveTo(108, 7767, 5263); //safe spot
+						}
+						break;
+
+					case "Diablo is dead!" :
+						if(me.areaid == 108 && me.mode != 17){
+							NTC_Delay(100);
+							NTR_TakePortal();
+							NTC_PingDelay(500);
+							NTR_GoTyrael();
+						}
+						break;	
+				// ACT 5 Case's---------------------------------------------
+					case "Anya up!" :
+						NTC_PingDelay(300);
+						NTR_TalkMalah();
+						NTC_PingDelay(400);
+						NTR_TalkAnya();
+						NTC_PingDelay(400);
+						NTR_TakePortal();
+						NTC_PingDelay(400);
+						NTR_TalkMalah();
+						NTC_Delay(400);
+						NTR_ReadScroll();
+						break;
+						
+					case "Shenk up!" :
+						NTC_Delay(100);
+						if(me.areaid == 109){
+							NTM_UsePortal("BluePortal", 110, NTConfig_Leader);
+							NTC_PingDelay(500);
+						}
+						break;
+					
+					case "Shenk is dead!" :
+						NTC_Delay(100);
+						if(me.areaid == 110 && me.mode != 17){
+							NTC_PingDelay(500);
+							NTR_TakePortal();
+						}
+						NTC_PingDelay(100);
+						break;
+					case "Throne up!" :
+						NTC_Delay(100);
+						if(me.areaid == 110 && me.mode != 17){
+							NTC_PingDelay(500);
+							if(!NTM_UsePortal("Blue Portal", 131,NTConfig_Leader)){
+								NTC_Delay(1000);
+							}
+						}
+						NTC_PingDelay(100);
+						break;
+						
+					case "Rush Over!":
+						NTC_Delay(550);				
+						NTR_IncrementRusheePos(); // For automated rusher bot
+						NTC_Delay(350);			
+						NTC_SendMsgToScript("NTBotGame.ntj", "QuitGame");
+						break;
+                }
+            }
+        }
+    }
+    else if(type == 4 && ((msg.indexOf("weaken") != -1) || (msg.indexOf("timeout") != -1))&& (msg.indexOf(NTConfig_Leader) != -1))
+    {
+        NTC_Delay(750);
+        ExitGame();
+    }
+}

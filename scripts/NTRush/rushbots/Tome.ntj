@@ -1,0 +1,67 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(80)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+
+	NTM_MoveToStair(me.areaid, 94);
+	NTM_TakeStair(94);
+
+	NTC_Delay(500);
+
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 193)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	NTA_ClearPosition(30);
+
+	NTSI_PickItems();
+
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 193,+2, -6)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	NTM_MakeTP();	
+
+	Say("Tome up!");
+
+	NTA_ClearPosition(25);
+	
+	NTR_CoverRushee();
+	
+	NTR_ClearSpot(25,true,200);
+	
+	NTM_UsePortal("BluePortal", 75, me.charname);
+	
+	Print(COLOR_3 + "Waiting for Rushee..");
+	NTC_Delay(13000); //wait for rushee to talk to alkor
+
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

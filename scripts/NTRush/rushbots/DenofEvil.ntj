@@ -1,0 +1,53 @@
+function NTMain()
+{
+  Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+	
+	if(me.areaid != 1){
+		NTTM_TownMove("waypoint");
+		NTM_TakeWaypoint(1);
+	}
+	
+	if(me.areaid == 1){
+		NTTM_TownMove("exit");
+	}
+	
+	while(me.areaid != 2){
+		NTM_MoveTo(2,me.x+10,me.y);
+	}
+	
+	if(me.areaid == 2){
+		Print(C_DARK_GREEN+"In Blood Moor");
+		NTC_Delay(500);
+		
+		if(!NTM_MoveToStair(2, 8)){
+			Say("I cant move to stair");
+		}		
+		NTM_TakeStair(8);
+	}	
+	
+	if(me.areaid == 8){
+		NTM_MakeTP();
+		Say("Den up!");
+		while(!NTC_IsQuesterIn()){
+			NTP_DoPrecast(true);
+		}	
+		while(!NTC_IsQuesterOut()){
+			NTR_ClearDen(true);	
+		}
+	}	
+	NTC_SendMsgToScript("loader.ntj", "end");		
+}
