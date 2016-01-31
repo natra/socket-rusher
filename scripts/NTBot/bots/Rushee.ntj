@@ -445,6 +445,7 @@ var i;
 						if(me.areaid == 109){
 							NTM_UsePortal("BluePortal", 110, NTConfig_Leader);
 							NTC_PingDelay(500);
+							NT_File("logs/messagecomands/rushee-canjoin.txt", 1, "false");
 						}
 						break;
 					
@@ -452,6 +453,7 @@ var i;
 						NTC_Delay(100);
 						if(me.areaid == 110 && me.mode != 17){
 							NTC_PingDelay(500);
+							NT_File("logs/messagecomands/rushee-canjoin.txt", 1, "false");
 							NTR_TakePortal();
 						}
 						NTC_PingDelay(100);

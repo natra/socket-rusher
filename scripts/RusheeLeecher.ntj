@@ -436,7 +436,8 @@ function locationAction(location)
 				game = "";
 			}
 		}
-		if (game!="")
+		canjoin = NT_File("logs/messagecomands/rushee-canjoin.txt", 0);
+		if (game!="" && canjoin == "true")
 		{
 			DebugInOOG('Leader is in the game "' + game + '"');
 			controlData.click(controlData.controls.lobby.button.join);
