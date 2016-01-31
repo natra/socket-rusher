@@ -181,6 +181,8 @@ var rusheepos = 0;
 
 var controlData = new controlInfo();
 
+var charChanged = false;
+
 var increaseGameCount = true;
 var firstTimeFl = true;
 var retryLeaderGameCount = 0;
@@ -220,7 +222,8 @@ function NTMain()
                 if(Load("NTLeech/NTLeechGame.ntj"))
                 {
                     if(!reEnterSameGame) { NT_File("logs/messagecomands/"+me.charname+"-lastgame.txt", 1, me.gamename); }	// writes current game for comparing to new game to join next time in lobby	
-									
+					
+					NT_File("logs/messagecomands/"+me.charname+"-charChanged.txt", 1, "false");			
 					retryFL = 0; // sets the counter back to 0 upon game entry.
 					_ingame = true;
 					retryLeaderGameCount = 0;
@@ -296,10 +299,13 @@ function locationAction(location)
         }
 
         game = '';
+        charChanged = NT_File("logs/messagecomands/"+me.charname+"-charChanged.txt", 0);
 		if(useTextFileJoin) {
 			gameStatus = NT_File("logs/messagecomands/rushbot-gamestatus.txt", 0);
-			if (gameStatus == "rushover")
+			if (gameStatus == "rushover" && charChanged == "false")
 			{
+				Delay(500);
+				NT_File("logs/messagecomands/"+me.charname+"-charChanged.txt", 1, "true");
 				Delay(2000);
 				controlData.click(controlData.controls.lobby.button.quit);		
 				Delay(2000);					
@@ -308,127 +314,6 @@ function locationAction(location)
 			NT_RetrieveLeaderName(); // Retrieve leader name from txt file
 			NT_RetrievenextGame(); //read message from txt file and set game and gamepassword vars from that 
 		} 
-		else {
-			if(useFL || useFLCount > 0) {
-				var _tick = GetTickCount();
-				if ((_leaderOfflineTick < 0 || (_leaderOfflineTick + LeaderOfflineDelay) < _tick) // maybe play with this so it skips it for 30 seconds
-				 && (_leaderInChatTick < 0 || (_leaderInChatTick + LeaderInChatDelay) < _tick)
-				 && (_GameIsFullTick < 0 || (_GameIsFullTick + GameIsFullDelay) < _tick))
-				{
-					Delay(500);			
-					DebugInOOG('Locating the leader : '+leaderAccountName);
-					if(useFLCount > 0 && retryFL < useFLCount) {
-						
-						if(!firstTimeFl) {
-							Delay(delayFL);
-						} else {
-							firstTimeFl = false;
-						}
-					
-						Say('/f l');
-						retryFL++;
-					}
-					else if(useFL) {
-						if(!firstTimeFl) {
-							Delay(delayFL);
-						} else {
-							firstTimeFl = false;
-						}
-						Say('/f l');
-					}
-					
-				}
-			}
-
-			if(chat = controlData.get(controlData.controls.lobby.chat.textBox.channelText))
-			{
-				var found_leader = false;
-				lines = chat.GetText();
-				if(!lines) { break; }
-				for (var line_id = lines.length - 1; line_id > -1; line_id--)
-				{
-					if (found_leader) // useless... :/
-						break;
-
-					if (lines[line_id].substring(0,1) == " ")
-						continue;
-
-					// retrieving the whole message
-					var msg = lines[line_id].replace(/^\s+|\s+$/, "");
-					var msglines = 1;
-					while (lines[line_id+msglines] != undefined && lines[line_id+msglines].substring(0,2) == "  ")
-					{
-						msg += " " + lines[line_id+msglines].replace(/^\s+|\s+$/, "");
-						msglines++;
-					}
-					if (msg.lastIndexOf(leaderName) >= 0)
-						DebugInOOG("yc8found him :;"+msg);
-
-					// checking if the msg is a friendly whisper
-					if (msg.lastIndexOf(leaderName + ' (*' +leaderAccountName+')') > -1 || msg.lastIndexOf(leaderName + '@' + GateWayToName() + ' (*' +leaderAccountName+')') > -1)              
-				   // if (msg.lastIndexOf(leaderName + ' (*' +leaderAccountName+')') > -1) // need to modify this and then add another to handle the "@USWest
-					{																	// should be just a matter of leaderName + '@' and then register the 2nd line as game name
-						 var regGameNameWhispered=/^.*in_new_game\s+(.*)$/gi; // replaced below with this to join on mesage upon entering game
-						//var regGameNameWhispered=/^.*(game|partie|spiel|partita|partida).*(nomm[^\s]*|called|chiamata)\s*([\w\s-]*\w)\s*\.\s*$/gi;
-						if (msg.match(regGameNameWhispered))
-							game = msg.replace(regGameNameWhispered, "$1"); // replaced below with this to join on mesage upon entering game
-							//game = msg.replace(regGameNameWhispered, "$3");
-
-						if (game != '')
-						{
-							found_leader = true;
-							break;
-						}
-					}
-
-					// checking if the msg is from the friend list
-					if (msg.lastIndexOf(': '+leaderAccountName+',') > -1)
-					{
-						found_leader = true;
-						var regOffline=/^.*(offline|desconectado).*$/gi;
-						var regInChat=/^.*(channel|canale?)\s*([\w\s-]*\w)\.?\s*$/gi;
-						var regGameName=/^.*(game|partie|spiel|partita|partida)\s*([\w\s-]*\w)\s*\(priv[^\)]*\)\.\s*$/gi;
-
-						if (msg.match(regOffline)
-							&& (_leaderOfflineTick < 0 || (_leaderOfflineTick + LeaderOfflineDelay) < _tick))
-						{
-							DebugInOOG('Leader is offline, delay '+Math.round(LeaderOfflineDelay/1000)+' sec for next /f l.');
-							_leaderOfflineTick = GetTickCount();
-						}
-						else if (msg.match(regInChat)
-								&& (_leaderInChatTick < 0 || (_leaderInChatTick + LeaderInChatDelay) < _tick))
-						{
-							DebugInOOG('Leader is in the chat "'+msg.replace(regInChat, "$2")+'", delay '+Math.round(LeaderInChatDelay/1000)+' sec for next /f l.');
-							_leaderInChatTick = GetTickCount();
-						}
-						else if (msg.match(regGameName)
-								&& ((_leaderOfflineTick < 0 || (_leaderOfflineTick + LeaderOfflineDelay) < _tick)
-									&& (_leaderInChatTick < 0 || (_leaderInChatTick + LeaderInChatDelay) < _tick)))
-						{
-							game = msg.replace(regGameName, "$2");
-						}
-						else if ((_leaderInChatTick < 0 || (_leaderInChatTick + LeaderInChatDelay) < _tick)
-								&& (_leaderOfflineTick < 0 || (_leaderOfflineTick + LeaderOfflineDelay) < _tick))
-						{
-							// unhandled line, supposelly "In Realm"
-							DebugInOOG('The leader was in the the lobby but not in chat, delay '+Math.round(LeaderInChatDelay/1000)+' sec for next /f l.');
-							_leaderInChatTick = GetTickCount();
-						}
-
-						break;
-					}
-				}
-
-				if (found_leader == false)
-					DebugInOOG('I couldn\'t find the leader in my friend list!');
-			}
-			else
-			{
-				DebugInOOG('I can\'t read the chat!');
-				//DebugInOOG('You probably haven\'t added the lobby chat controlinfo coordinates!');
-				Delay(30000);
-			}
-		}
 		if(!reEnterSameGame) { // added to check game name.  If same as last game then don't re enter.
 			NT_RetrieveLastGame();
 			//Delay(250);
