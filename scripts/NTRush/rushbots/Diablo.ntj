@@ -14,6 +14,11 @@ function NTMain() {
 		return;
 	}
 
+	if (NTC_getLeadersAct() > 4){
+		NTC_SendMsgToScript("loader.ntj", "end");
+		return;
+	}
+
 	Print(COLOR_8 + "Going to River of Flame");
 
 	if(!NTTM_TownMove("waypoint")){

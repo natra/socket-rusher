@@ -24,3 +24,36 @@ function NTC_GetPlayersAmount()
 
 	return _playAmount;	
 }
+
+function NTC_getLeadersAct(){
+	var _leader;
+	var _player;
+	var _myPartyId;
+	var leaderAct;
+
+	_leader = NT_File("logs/messagecomands/rushbot-rushee.txt", 0);
+	_player = GetPlayerUnit();
+	_myPartyId = _player.partyid;
+
+	do
+	{
+
+		if(_myPartyId == _player.partyid && _player.name == _leader){
+			if(_player.areaid <= 39)
+				leaderAct = 1;
+			else if(_player.areaid >= 40 && _player.areaid <= 74)
+				leaderAct = 2;
+			else if(_player.areaid >= 75 && _player.areaid <= 102)
+				leaderAct = 3;
+			else if(_player.areaid >=103 && _player.areaid <= 108)
+				leaderAct = 4;
+			else
+				leaderAct = 5;
+		}
+
+		NTC_Delay(100);
+
+	} while(_player.GetNext());
+
+	return leaderAct;
+}

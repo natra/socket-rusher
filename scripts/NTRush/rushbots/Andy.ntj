@@ -28,6 +28,11 @@ function NTMain() {
 		return;
 	}
 
+	if (NTC_getLeadersAct() > 1){
+		NTC_SendMsgToScript("loader.ntj", "end");
+		return;
+	}
+
 	NTP_DoPrecast(true);
 
 	for (i = 0; i < 2; i++) {
@@ -63,7 +68,7 @@ function NTMain() {
 	}
 
 	NTM_MakeTP();
-	
+
 	Say("Andariel up!");
 
 	NTA_ClearPosition(20);

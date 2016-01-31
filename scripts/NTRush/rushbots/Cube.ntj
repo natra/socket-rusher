@@ -13,6 +13,11 @@ function NTMain()
 		return;
 	}
 
+	if (NTC_getLeadersAct() > 2){
+		NTC_SendMsgToScript("loader.ntj", "end");
+		return;
+	}
+
 	if(me.diff == 0) {
 		if(!NTTM_TownMove("waypoint")) {
 			NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
