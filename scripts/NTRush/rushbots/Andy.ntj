@@ -57,7 +57,13 @@ function NTMain() {
 			NT_FieldID();
 		} 
 	}
+
+	while (NTC_GetPlayersAmount() < 3) {
+		Delay(500);
+	}
+
 	NTM_MakeTP();
+	
 	Say("Andariel up!");
 
 	NTA_ClearPosition(20);

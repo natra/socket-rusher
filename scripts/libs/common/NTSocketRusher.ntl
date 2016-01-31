@@ -1,0 +1,26 @@
+/*
+Written by natra for SocketRusher
+*/
+
+function NTC_GetPlayersAmount()
+{
+	var _player;
+	var _myPartyId;
+	var _playAmount = 0;
+	
+	_player = GetPlayerUnit();
+	_myPartyId = _player.partyid;
+	
+	if(_myPartyId == _player.partyid && _player.name != me.charname)
+		_playAmount++;
+
+	do
+	{
+		if(_myPartyId == _player.partyid && _player.name != me.charname)
+			_playAmount++;
+		NTC_Delay(100);
+
+	} while(_player.GetNext());
+
+	return _playAmount;	
+}
