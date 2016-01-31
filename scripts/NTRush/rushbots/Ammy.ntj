@@ -13,8 +13,6 @@ function NTMain()
 		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
 		return;
 	}
-
-	NTTMGR_TownManager();
 			
 	if(!NTTM_TownMove("waypoint"))
 	{
@@ -89,8 +87,6 @@ function NTMain()
 	NTM_UsePortal("BluePortal", 40, me.charname);
 
 	NTC_PingDelay(3000);
-
-	NTTMGR_TownManager();
 
 	NTC_SendMsgToScript("loader.ntj", "end");
 }

@@ -14,7 +14,6 @@ function NTMain() {
 		return;
 	}
 
-	NTTMGR_TownManager();
 	Print(COLOR_8 + "Going to River of Flame");
 
 	if(!NTTM_TownMove("waypoint")){

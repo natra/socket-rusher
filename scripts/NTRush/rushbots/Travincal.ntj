@@ -19,8 +19,6 @@ function NTMain()
 		return;
 	}
 
-	NTTMGR_TownManager();
-
 	if(!NTTM_TownMove("waypoint")) {
 		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
 		return;

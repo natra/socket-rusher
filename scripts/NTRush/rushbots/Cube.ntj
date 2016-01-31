@@ -13,8 +13,6 @@ function NTMain()
 		return;
 	}
 
-	NTTMGR_TownManager();
-
 	if(me.diff == 0) {
 		if(!NTTM_TownMove("waypoint")) {
 			NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
@@ -82,7 +80,6 @@ function NTMain()
 		NTSI_PickItems();
 
 		NTM_UsePortal("BluePortal", 40, me.charname);
-		NTTMGR_TownManager();
 	}
 	NTC_SendMsgToScript("loader.ntj", "end");
 	
