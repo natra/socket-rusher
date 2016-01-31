@@ -99,8 +99,8 @@ function NT_LoadConfig()
 	//----------------------------------------------------------------------------------------------
 	NTConfig_BeltColType[0] = "hp";
 	NTConfig_BeltColType[1] = "hp";
-	NTConfig_BeltColType[2] = "mp";
-	NTConfig_BeltColType[3] = "rv";
+	NTConfig_BeltColType[2] = "hp";
+	NTConfig_BeltColType[3] = "hp";
 
 	//-----------------------------------------------------------------------------------
 	// Pickit (SnagIt) Configuration
