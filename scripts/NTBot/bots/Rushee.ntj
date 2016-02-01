@@ -359,6 +359,8 @@ var i;
 							NTC_Delay(100);
 							NTM_MoveTo(me.areaid, 17590, 8068);
 							NTC_Delay(1500);
+							NT_File("logs/messagecomands/rushee-ina4.txt", 1, "false");
+							NTC_Delay(1500);
 							if(NTM_TakeUnit(NTC_UNIT_OBJECT, 342))
 							NTC_Delay(1500);
 						}
@@ -418,6 +420,8 @@ var i;
 						break;
 
 					case "Diablo up!" :
+						NTC_Delay(100);
+						NT_File("logs/messagecomands/rushee-ina4.txt", 1, "true");
 						NTC_Delay(100);
 						if(me.areaid == 103){
 							NTM_UsePortal("BluePortal", 108, NTConfig_Leader);

@@ -215,7 +215,12 @@ function locationAction(location)
 				Delay(2000);					
 				break;
 		}
-		
+		inact4 = NT_File("logs/messagecomands/rushee-ina4.txt", 0);
+		if(inact4 == "false"){
+			controlData.click(controlData.controls.lobby.button.join);
+			Delay(500);
+			break;
+		}
 		if(GetTickCount() > nextGameMake)
 		{
 			lastGameFailed = false;
@@ -482,7 +487,8 @@ function locationAction(location)
 		//Delay(inGameAt);
 		lastGameStatus = 0;
 		setNextGameMake();
-
+		Delay(400);
+		NT_File("logs/messagecomands/rushee-ina4.txt", 1, "true");
 		locationTimeout(gameDoesNotExistTimeout, location);
 		break;
 	}
