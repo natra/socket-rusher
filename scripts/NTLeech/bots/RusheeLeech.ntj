@@ -228,6 +228,11 @@ var i;
 						NTR_TakePortal();
 						NTR_TalkJer();					
 						break;
+					case "Get out of Harem!" :
+						if(me.areaid == 50){
+							NTM_TakeStair(40);
+						}
+						break;
 
 				// ACT 3 Case's---------------------------------------------	
 					

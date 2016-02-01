@@ -64,6 +64,9 @@ function NTMain()
 
 	while (!NTC_IsGroupInActV2(3)) {
 		Delay(1000);
+		if(NTC_IsSomeoneInHarem()){
+			Say("Get out of Harem!");
+		}
 	}
 	
 	NTC_Delay(5000);

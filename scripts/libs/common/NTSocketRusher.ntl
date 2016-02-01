@@ -91,3 +91,19 @@ function NTC_IsGroupInActV2(act) // checks if all players in party are in given 
 
 	return true;	
 }
+
+function NTC_IsSomeoneInHarem(){
+	var _player;
+	_player = GetPlayerUnit();
+	
+	do
+	{
+		if(_player.name != me.charname && _player.areaid == 50){
+			return true;
+		}	
+		NTC_Delay(100);
+
+	} while(_player.GetNext());
+	
+	return false;
+}
