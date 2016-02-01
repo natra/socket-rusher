@@ -1,50 +1,13 @@
-/////////////////////////////////////////////////////////////////
-// characters in your game setting: //		
-////////////////////////////////////////////////////////////////
-var characterdiff        =  "99"; 	//use this to keep those pesky spam bots out of the f'ing game
-var maxNumberOfPlayersss = "8";		//use this to set the maximum number of players allowed in your game
-
-///////////////////////////////////////////////////
-// 			Mule Notify
-///////////////////////////////////////////////////
-var MuleNotification = true; // Set to true to send status to manager
+// AccCreator bot based on AutoMule bot from Etal crew
 
 ///////////////////////////////////////////////////
 // 		Mule Specific vars
 ///////////////////////////////////////////////////
-var MuleGamePassword = "xx"; // Consistant through all games
 var CharPrefix = "";
-var AccountPrefix = "";
 var CreateCharacterClass = 0;  // 0:Amazon, 1:Sorceress, 2:Necromancer, 3:Paladin, 4:Barbarian, 5:Druid, 6:Assassin 
 var Hardcore = false;
 var Ladder = false;
 var Classic = false;
-
-///////////////////////////////////////
-//  Channel Settings //		/ /These controll what if any channel you join
-///////////////////////////////////////
-var joinChatAfterGame			= false;			 // join chat after leaving a game
-var joinRandomChannel			= false;		 // if this is true, will join a random channel, otherwise it will use the channel below..
-var joinChannelInChat			= "";		 // Channel you want your bot to join, leave blank to not join a private channel
-
-///////////////////////////////////////
-//        Message Settings: 		 //		// These controll what your bot sais to the leechers will also send a log incommand to a channel bot
-///////////////////////////////////////
-var chatMessageOnJoin			= "";	// Chat Message to say Login command for channel bot will only be sent once
-var chatMessageAfterGame1		= "";	// Optional chat message Line #1 to say after each game on Channel
-var chatMessageAfterGame2		= "";		// Optional chat message Line #2 to say after each game on Channel
-var chatMessageAfterGame3		= "";		// Optional chat message Line #3 to say after each game on Channel
-var chatMessageAfterGame4		= "";		// Optional chat message Line #4 to say after each game on Channel
-var chatMessageAfterGame5		= "";	// Optional chat message Line #5 to say after each game on Channel
-
-///////////////////////////////////////		// These will let you send a message with a game name password and time to your leechers
-//      Game Message Settings:       //		// var saygamename must be true for any of these to work
-///////////////////////////////////////		// You cant NOT have a - in you game name it will bug it out
-var saygamename 			= false;						// Must be true for any of the game message settings to work
-var nextgamemessage			= "next game should be";	// This will come befor your next game name eg "New game is"
-var saypassword 			= true;						// This will togle if the bot says your game pw
-var saytime 				= true;						// This will togle if the bot says how much time till creation
-var timemessage 			= "in about";				// This will come after your pw and befor the time eg. "in about" xx seconds say time MUST be true for this to be used
 
 //////////////////////////////////////
 //       Minimum Game Length:       //
@@ -121,15 +84,12 @@ var accCreated = false;
 
 Include("libs/controlInfo.ntl");
 Include("libs/common/NTColorConverter.ntl");
-Include("libs/mulingInfo.ntl");
 
 var controlData = new controlInfo();
 
 function NTMain()
 {
 	Delay(1000);
-
-	writeInitialSettings();
 	
 	var _ingame = false;
 
@@ -181,7 +141,6 @@ function locationActionMule2(location)
 	case 8: // Main Menu
 		if(controlData.getCurrentRealmIndex() == me.gatewayid)
 		{
-			//outputGameLength();
 			controlData.click(controlData.gameTypes[me.playtype]);
 		}
 		else
@@ -189,7 +148,6 @@ function locationActionMule2(location)
 		break;
 
 	case 9: // Login
-		// login w podany acc
 		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
 		//SendCopyData("D2NT Manager", null, 9<<16, "Acc created: " + accCreated);
 		Delay(loginDelay);
@@ -206,7 +164,6 @@ function locationActionMule2(location)
 		break;
 		
 	case 10: // Login Error (this is a fatal error, so stop)
-		// sendEventToOOG(D2NT_MGR_RESTART, location.name, 10);
 		Delay(2000);
 		controlData.click(controlData.controls.login.loginError.button.ok);
 		Delay(100);
@@ -286,8 +243,6 @@ function locationActionMule2(location)
 
 	case 26: // Lobby - Game Name Exists
 		sendEventToOOG(D2NT_MGR_PRINT_LOG, "Game already exists", 0);
-		inGameAt = 0;
-		lastGameStatus = 0;
 		break;
 
 	case 27: // Gateway Select
@@ -296,14 +251,6 @@ function locationActionMule2(location)
 		break;
 
 	case 28: // Lobby - Game Does Not Exist
-		inGameAt = Random(gameDoesNotExistDelayMin, gameDoesNotExistDelayMax);
-		lastGameStatus = 0;
-		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name + " Game seems to have been closed");
-		NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Main");
-		Delay(500);
-		NT_File("AMS/MuleStatus/" + me.account + "_mulingstatus.txt", 1, "false");
-		Delay(500);
-		locationTimeout(gameDoesNotExistTimeout, location);
 		break;
 
 	case 29: // New Character - hero class select
@@ -367,16 +314,12 @@ function locationActionMule2(location)
 		Delay(2000);
 		
 		if(controlData.getLocation().id == 25){
-			//SendCopyData("D2NT Manager", null, 9<<16, "Name Exists or Rejected");
 			Delay(500);
 			controlData.click(controlData.controls.lobby.pleaseWait.button.cancel);
 			Delay(500);
 			break;		
 		}
 
-		//if(MuleNotification) {
-			//SendCopyData("D2NT Manager", null, 9<<16, "New char has been made!");
-		//}
 		Delay(500);
 		if(charClass < 7){
 			charClass++;
@@ -402,9 +345,7 @@ function locationActionMule2(location)
 			controlData.click(controlData.controls.newAccount.button.exit);
 			Delay(500);
 		} else {
-			if(MuleNotification) {
-				SendCopyData("D2NT Manager", null, 9<<16, me.account + " has been made!");
-			}
+			SendCopyData("D2NT Manager", null, 9<<16, me.account + " has been made!");
 			sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
 			var _accountname = me.account; 
 			Delay(500);
@@ -436,24 +377,6 @@ function locationActionMule2(location)
 function sendEventToOOG(locationId, statusString, pendingTime)
 {
 	return SendCopyData("D2NT Manager", null, (locationId<<16)|pendingTime, statusString);
-}
-
-function setNextGameMake()
-{
-	lastGameMade = GetTickCount();
-	nextGameMake = lastGameMade + createGameThreshold + Random(0-createGameThresholdRandom, createGameThresholdRandom) + inGameAt;
-	inGameAt = 0;
-	chatActionsDone = false;
-}
-
-function outputGameLength()
-{
-	if(inGameAt)
-	{
-		duration = GetTickCount() - inGameAt;
-
-		inGameAt = (duration < gameMinLength ? gameMinLength - duration : 0);
-	}
 }
 
 function locationTimeout(time, location)
@@ -537,25 +460,6 @@ function getGameCounter(lastGameString, simple)
    }
 }
 
-function My_ExitGame_Check()
-{
-    for (var i = 0; i < 40; i++)
-    {
-        if (controlData.getLocation().id != undefined)
-            break;
-
-        if (i > 38)
-        {
-            LogPrintSimple(me.account + " StarterTest.txt", "White Screen of Death: Restarting")
-			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "White Screen of Death: Restarting", 0);
-            sendEventToOOG(D2NT_MGR_RESTART, "", 5);
-            My_Delay(); // make sure and add this also
-        }
-
-        Delay(500);
-    }
-}
-
 function My_Delay(retry)
 {
     if (arguments.length < 1)
@@ -565,129 +469,10 @@ function My_Delay(retry)
         Delay(1000);
 }
 
-function LogPrintSimple(filepath, mesg){ 
-
-	var _filepath = filepath;
-	var _mesg = mesg;
-	
-	var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
-	var logfile = FileOpen(_filepath, 2); // opens file 
-	if(!logfile)
-		var logfile = FileOpen(_filepath, 1); // if file not there then creates it
-
-	logfile.WriteLine(date + " " + _mesg );
-	logfile.Close();
-}
-
-function writeInitialSettings()
-{
-	_char = FileOpen("AMS/MuleStatus/" + me.account + "_charstatus.txt", 0);
-
-	if(!_char)
-		NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Main");
-	else
-		_char.Close();
-	Delay(500);
-
-	_stat = FileOpen("AMS/MuleStatus/" + me.account + "_mulingstatus.txt", 0);
-
-	if(!_stat)
-		NT_File("AMS/MuleStatus/" + me.account + "_mulingstatus.txt", 1, "false");
-	else
-		_stat.Close();
-	Delay(500);
-
-	_pos = FileOpen("AMS/MuleStatus/" + me.account + "_locstatus.txt", 0);
-
-	if(!_pos)
-		NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "0");
-	else
-		_pos.Close();
-}
-
-function NT_File(path, mode, msg, delay) {
-    var _msg  = "";
-    var _line = "";
-    var _fileHandle;
-    var _isFileCheck = false;
-
-    if (arguments.length < 3) { msg   = ""; }
-    if (arguments.length < 4) { delay = (mode > 0) ? 5 : 2; }
-
-    while (delay--) {
-        if (mode == 2 && !_isFileCheck) {
-            _fileHandle = FileOpen(path, 0);
-            if (!_fileHandle)
-                _fileHandle = FileOpen(path, 1);
-
-            if (_fileHandle)
-                _fileHandle.Close();
-
-            _isFileCheck = true;
-        }
-
-        _fileHandle = FileOpen(path, mode);
-        if (_fileHandle)
-            break;
-
-        if (delay)
-            Delay(200);
-    }
-
-    if (_fileHandle) {
-        if (mode == 0) {
-            while (!_fileHandle.eof) {
-                _line = _fileHandle.ReadLine();
-                if (_line || !_fileHandle.eof)
-                    _msg += _line + msg;
-            }
-        }
-        else if (msg)
-            _fileHandle.WriteLine(msg);
-
-        _fileHandle.Close();
-    }
-
-    return _msg;
-}
-		
-function SetForNextGame()
-{
-	var gametime = GetTickCount() + 1000 * 60 * 3 + 1000 * 15;
-	var timeTilStart = gametime - GetTickCount();
-	locationTimeout(timeTilStart, location);
-	chatActionsDone = false;
-	inGameAt = 0;
-}
-
 function NT_CheckNameLength(prefix, totallength)
 {
 	var _howManyChars = totallength - prefix.length
 	return _howManyChars;
-}
-
-function NT_LogMuleAccount(newaccount)
-{ 
-	var _newAccount = newaccount;
-	var muleaccountlist = FileOpen("AMS/MuleLogs/" + me.account + "_muleaccount.txt", 2); 
-	if(!muleaccountlist)
-		var muleaccountlist = FileOpen("AMS/MuleLogs/" + me.account + "_muleaccount.txt", 1);  
-
-	muleaccountlist.WriteLine(_newAccount + "/" + muleAccountPassword);
-	muleaccountlist.Close();
-	return;
-}
-
-function LogMuleAccountStatus(newaccount)
-{
-	var _newAccount = newaccount;
-	var muleaccountlist = FileOpen("AMS/MuleStatus/" + me.account + "_muleaccount.txt", 2); 
-	if(!muleaccountlist)
-		var muleaccountlist = FileOpen("AMS/MuleStatus/" + me.account + "_muleaccount.txt", 1);  
-
-	muleaccountlist.WriteLine(_newAccount);
-	muleaccountlist.Close();
-	return;
 }
 
 function getRandomStringNames(_length)
