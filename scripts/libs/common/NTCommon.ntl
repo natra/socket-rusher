@@ -347,6 +347,7 @@ function NTC_IncludeLibs()
 	Include("libs/common/NTItemlogger.ntl");
 	Include("libs/common/NTColorConverter.ntl");
 	Include("libs/common/NTRushee.ntl");
+	Include("libs/common/NTSocketRusher.ntl");
 
 
 	switch (me.classid) {
