@@ -432,6 +432,17 @@ var i;
 							NTC_Delay(100);
 							NTR_TakePortal();
 							NTC_PingDelay(500);
+							if(me.areaid == 108){
+								NTR_TakePortal();
+								NTC_PingDelay(500);
+							}
+							if(me.areaid == 108){
+								if(!NTR_UseScrollOfTownPortal()){
+									Say("Cant TownPortal");
+								}
+								NTC_PingDelay(300);
+								NTR_TakePortal();
+							}
 							NTR_GoTyrael();
 						}
 						break;	

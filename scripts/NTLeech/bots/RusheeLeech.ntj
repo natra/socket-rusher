@@ -293,22 +293,13 @@ var i;
 
 					case "Diablo up!" :
 						NTC_Delay(100);
-						if(me.areaid == 103){
-							NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
-						}
-						if(me.areaid === 108){
-							NTM_MoveTo(108, 7767, 5263); //safe spot
-						}
 						break;
 
 					case "Diablo is dead!" :
-						if(me.areaid == 108 && me.mode != 17){
-							NTC_Delay(100);
-							NTR_TakePortal();
-							NTC_PingDelay(500);
-							NTR_GoTyrael();
-						}
+						NTC_Delay(100);
+						NTR_GoTyrael();
 						break;	
+						
 				// ACT 5 Case's---------------------------------------------
 					case "Anya up!" :
 						NTC_PingDelay(300);

@@ -47,6 +47,10 @@ function NTMain() {
 		return;
 	}
 
+	while (NTC_GetPlayersAmount() < 3) {
+		Delay(500);
+	}
+
 	NTM_MoveTo(108, 7768, 5255);
 
 	NTM_MakeTP();
@@ -54,7 +58,8 @@ function NTMain() {
 	Say("Diablo up!");
 
 	while(!NTC_IsQuesterIn()) {
-		Delay(500);
+		Say("Diablo up!");
+		Delay(2000);
 	}
 
 	NTM_MoveTo(108, 7792, 5291); //safe spot
@@ -70,8 +75,23 @@ function NTMain() {
 	
 	Print(COLOR_8 + "Killing Diablo");
 	if (!NTA_KillMonster(243)) {
-		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
-		return;
+		if (!NT_OpenSealsInt()) {
+			NTC_SendMsgToScript("loader.ntj", "NT_OpenSealsInt()");
+			return;
+		}
+		NTM_MoveTo(108, 7792, 5291); //safe spot
+		
+		for (i = 0; i < 200; i += 1) {
+			if (GetUnit(NTC_UNIT_MONSTER, 243)) {
+				break;
+			}
+			NTC_Delay(500);
+		}
+		
+		if (!NTA_KillMonster(243)) {
+			NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
+			return;
+		}
 	}
 	NTR_GoRushee();
 	NTC_Delay(200);
